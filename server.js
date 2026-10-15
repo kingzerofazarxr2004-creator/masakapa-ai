@@ -1,15 +1,16 @@
 const express = require('express');
 const dotenv = require('dotenv');
-app.use(helmet({ contentSecurityPolicy: false }));
+const helmet = require('helmet'); // <-- Helmet wajib dipanggil di sini
 
 // Memuat kunci rahasia dari .env
 dotenv.config();
 
+// 1. BUAT APP-NYA DULU
 const app = express();
 const port = process.env.PORT || 3000;
 
-// [TAMBAHAN BARU] Pasang pengaman Helmet di posisi paling atas aplikasi
-app.use(helmet());
+// 2. PASANG HELMET (Dengan pengamanan yang dilonggarkan untuk CSS)
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // Middleware agar bisa membaca folder public dan menerima data JSON
 app.use(express.static('public'));
