@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MasakApa.ai</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input:checked+div {
+            background-color: #f97316;
+            color: white;
+            border-color: #f97316;
+            box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.4);
+            transform: scale(1.05);
+        }
+
+        input[type="file"]::file-selector-button {
+            display: none;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        @keyframes scanline {
+            0% {
+                top: 0%;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        .animate-scanline {
+            animation: scanline 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen pb-24 relative">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-40 glass-effect">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="font-bold text-xl text-orange-500"><i class="fa-solid fa-box-open mr-2"></i>Kulkas Virtual</div>
+            <div class="flex items-center gap-4">
+
+                <!-- TOMBOL BUKU RESEP FAVORIT -->
+                <button id="btn-buka-favorit" class="text-slate-500 hover:text-orange-500 transition-colors relative"><i
+                        class="fa-solid fa-heart text-xl"></i></button>
+
+                <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name=User&background=f97316&color=fff"
+                        class="w-10 h-10 rounded-full border-2 border-orange-200 object-cover shadow-sm cursor-pointer hover:border-orange-500 transition-colors"
+                        alt="Profile" id="user-avatar">
+                    <div id="dropdown-profil"
+                        class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 hidden flex-col overflow-hidden z-50 transform origin-top-right transition-all">
+                        <button id="btn-buka-panduan"
+                            class="text-left px-4 py-3 text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-600 border-b border-slate-50"><i
+                                class="fa-solid fa-book-open text-orange-400 mr-2 w-4"></i> Cara Pakai</button>
+                        <button id="btn-buka-pengaturan"
+                            class="text-left px-4 py-3 text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-600 border-b border-slate-50"><i
+                                class="fa-solid fa-gear text-slate-400 mr-2 w-4"></i> Pengaturan</button>
+                        <button id="btn-logout"
+                            class="text-left px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50"><i
+                                class="fa-solid fa-arrow-right-from-bracket mr-2 w-4"></i> Keluar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-3xl">
+        <div class="flex bg-white rounded-2xl p-1 shadow-sm mb-6 no-select">
+            <button id="tab-manual"
+                class="flex-1 py-3 text-center rounded-xl bg-orange-100 text-orange-600 font-semibold text-sm transition-all"><i
+                    class="fa-solid fa-check-square mr-2"></i>Pilih Manual</button>
+            <button id="tab-scan"
+                class="flex-1 py-3 text-center rounded-xl text-slate-500 font-medium text-sm hover:bg-slate-50 transition-all"><i
+                    class="fa-solid fa-camera mr-2"></i>Scan Bahan</button>
+            <button id="tab-menu"
+                class="flex-1 py-3 text-center rounded-xl text-slate-500 font-medium text-sm hover:bg-slate-50 transition-all"><i
+                    class="fa-solid fa-utensils mr-2"></i>Menu Kost</button>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100 card-hover-float min-h-[400px]">
+
+            <div id="section-manual" class="block fade-in-up">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Bahan apa yang kamu punya?</h2>
+                <p class="text-sm text-slate-500 mb-6">Pilih bahan yang tersedia, AI kami akan memikirkan sisanya.</p>
+                <form id="form-masak">
+                    <div id="kategori-bahan-container"
+                        class="space-y-6 mb-8 max-h-[55vh] overflow-y-auto custom-scroll pr-2"></div>
+
+                    <!-- OPSI EKSTRA -->
+                    <div class="bg-orange-50/70 border border-orange-100 rounded-2xl p-4 mb-6 transition-all">
+                        <div class="flex items-center justify-between cursor-pointer" id="btn-toggle-opsi">
+                            <h3 class="font-bold text-orange-800 text-sm"><i class="fa-solid fa-fire-burner mr-2"></i>
+                                Opsi Ekstra Anak Kos (Opsional)</h3>
+                            <i class="fa-solid fa-chevron-down text-orange-500 transition-transform duration-300"
+                                id="icon-toggle-opsi"></i>
+                        </div>
+                        <div id="area-opsi-kos"
+                            class="hidden mt-4 space-y-4 fade-in-up border-t border-orange-200/50 pt-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-2">Peralatan di Kosanmu:</label>
+                                <div class="chip-container no-select" id="wadah-alat">
+                                    <label class="cursor-pointer"><input type="checkbox" name="alat" value="Rice Cooker"
+                                            class="hidden">
+                                        <div
+                                            class="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all">
+                                            🍚 Rice Cooker</div>
+                                    </label>
+                                    <label class="cursor-pointer"><input type="checkbox" name="alat"
+                                            value="Kompor 1 Tungku" class="hidden">
+                                        <div
+                                            class="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all">
+                                            ♨️ Kompor Tungku</div>
+                                    </label>
+                                    <label class="cursor-pointer"><input type="checkbox" name="alat" value="Panci Rebus"
+                                            class="hidden">
+                                        <div
+                                            class="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all">
+                                            🍲 Panci</div>
+                                    </label>
+                                    <label class="cursor-pointer"><input type="checkbox" name="alat" value="Wajan"
+                                            class="hidden">
+                                        <div
+                                            class="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all">
+                                            🍳 Wajan</div>
+                                    </label>
+                                    <label class="cursor-pointer"><input type="checkbox" name="alat" value="Blender"
+                                            class="hidden">
+                                        <div
+                                            class="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all">
+                                            🌪️ Blender</div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-2">Budget Beli Tambahan Maksimal
+                                    (Rp):</label>
+                                <input type="number" id="input-budget" placeholder="Contoh: 15000"
+                                    class="w-full px-4 py-2.5 rounded-xl border border-orange-200 focus:outline-none focus:border-orange-500 text-sm bg-white">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-submit-manual"
+                        class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-slate-800 transition-all flex justify-center items-center gap-2 btn-shine"><i
+                            class="fa-solid fa-wand-magic-sparkles text-orange-400"></i> Racik Resep Sekarang!</button>
+                </form>
+            </div>
+
+            <div id="section-scan" class="hidden fade-in-up">
+                <div id="area-upload-foto">
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">Pindai Bahan Makanan 📸</h2>
+                    <p class="text-sm text-slate-500 mb-6">Arahkan kamera ke bahan makanan atau pilih dari galeri, Koki
+                        AI akan menebak masakan yang cocok.</p>
+                    <div id="area-pilihan-scan" class="flex gap-4 mb-6"><button id="btn-buka-kamera" type="button"
+                            class="flex-1 bg-white border-2 border-orange-200 hover:border-orange-500 hover:bg-orange-50 rounded-2xl p-6 flex flex-col items-center justify-center transition-all group shadow-sm"><i
+                                class="fa-solid fa-camera-viewfinder text-3xl text-orange-500 mb-2 group-hover:scale-110 transition-transform"></i><span
+                                class="text-sm font-bold text-slate-700">Kamera</span></button><label
+                            class="flex-1 cursor-pointer bg-white border-2 border-slate-200 hover:border-orange-500 hover:bg-orange-50 rounded-2xl p-6 flex flex-col items-center justify-center transition-all group shadow-sm"><i
+                                class="fa-regular fa-images text-3xl text-slate-500 mb-2 group-hover:scale-110 transition-transform"></i><span
+                                class="text-sm font-bold text-slate-700">Galeri</span><input id="input-galeri"
+                                type="file" accept="image/*" class="hidden" /></label></div>
+                    <div id="kamera-container" class="hidden flex flex-col items-center mb-6 fade-in-up">
+                        <div
+                            class="relative w-full h-[400px] bg-black rounded-3xl overflow-hidden shadow-inner border border-slate-200 flex items-center justify-center">
+                            <video id="kamera-video"
+                                class="w-full h-full object-cover transition-transform duration-300" autoplay
+                                playsinline></video><button type="button" id="btn-switch-kamera"
+                                class="absolute top-4 right-4 bg-black/40 backdrop-blur text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-black/60 transition-all z-30 active:scale-95 border border-white/20"><i
+                                    class="fa-solid fa-camera-rotate text-xl"></i></button>
+                            <div class="absolute inset-0 pointer-events-none">
+                                <div class="absolute inset-0 border-4 border-orange-500/30 rounded-3xl z-10 m-4"></div>
+                                <div
+                                    class="absolute left-4 right-4 h-1 bg-orange-400 shadow-[0_0_15px_rgba(249,115,22,1)] z-20 animate-scanline">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 mt-4 w-full"><button type="button" id="btn-tutup-kamera"
+                                class="flex-1 bg-slate-200 text-slate-700 py-3 rounded-xl font-bold hover:bg-slate-300 transition-colors">Batal</button><button
+                                type="button" id="btn-jepret-kamera"
+                                class="flex-[2] bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 shadow-md transition-colors btn-shine"><i
+                                    class="fa-solid fa-camera mr-2"></i> Jepret Bahan</button></div><canvas
+                            id="kamera-canvas" class="hidden"></canvas>
+                    </div>
+                    <div id="preview-container"
+                        class="hidden relative w-full h-64 bg-slate-100 rounded-3xl overflow-hidden mb-6 shadow-inner border border-slate-200">
+                        <img id="preview-foto" class="w-full h-full object-cover" alt="Preview"><button
+                            id="btn-batal-foto"
+                            class="absolute top-3 right-3 bg-white/80 backdrop-blur text-slate-700 w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:bg-red-500 hover:text-white transition-colors"><i
+                                class="fa-solid fa-times text-lg"></i></button>
+                    </div>
+                    <button id="btn-submit-scan"
+                        class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-slate-800 transition-all flex justify-center items-center gap-2 btn-shine hidden"><i
+                            class="fa-solid fa-radar text-orange-400"></i> Analisis Gambar Ini!</button>
+                </div>
+                <div id="area-hasil-scan" class="hidden fade-in-up">
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl mb-6 flex items-start gap-3"><i
+                            class="fa-solid fa-circle-check text-emerald-500 text-2xl mt-1"></i>
+                        <div>
+                            <h4 class="font-bold text-emerald-800">Bahan Berhasil Dikenali!</h4>
+                            <p class="text-sm text-emerald-700 leading-snug">AI merekomendasikan masakan berikut. Pilih
+                                salah satu untuk melihat resepnya.</p>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-slate-700 mb-3"><i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                        Rekomendasi Koki AI:</h3>
+                    <div class="flex flex-col gap-3 mb-6" id="daftar-menu-scan"></div>
+                    <button id="btn-scan-ulang"
+                        class="w-full py-3 text-slate-500 hover:text-orange-500 hover:bg-orange-50 font-semibold rounded-xl transition-colors border border-transparent hover:border-orange-200"><i
+                            class="fa-solid fa-rotate-right mr-1"></i> Scan Foto Lainnya</button>
+                </div>
+            </div>
+
+            <div id="section-menu" class="hidden fade-in-up">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Resep Pasti Jadi 🍲</h2>
+                <p class="text-sm text-slate-500 mb-6">Pilih salah satu dari daftar masakan dewa anak kost ini, langsung
+                    keluar resepnya.</p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[60vh] overflow-y-auto custom-scroll pr-2"
+                    id="daftar-menu-kost"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- POP UP BUKU RESEP -->
+    <div id="favorit-modal"
+        class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
+        <div
+            class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-slate-800"><i
+                        class="fa-solid fa-book-bookmark text-orange-500 mr-2"></i> Buku Resepku</h3>
+                <button id="btn-tutup-favorit"
+                    class="text-slate-400 hover:text-red-500 transition-colors text-xl w-8 h-8"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="daftar-favorit" class="overflow-y-auto custom-scroll pr-2 space-y-3 flex-1">
+                <!-- Data dari Firebase akan dirender di sini -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals Lainnya -->
+    <div id="panduan-modal"
+        class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
+        <div
+            class="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-slate-800"><i class="fa-solid fa-book-open text-orange-500 mr-2"></i>
+                    Panduan Fitur</h3><button id="btn-tutup-panduan"
+                    class="text-slate-400 hover:text-red-500 transition-colors text-xl w-8 h-8"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="overflow-y-auto custom-scroll pr-2 space-y-6">
+                <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100">
+                    <h4 class="font-bold text-orange-700 mb-2">Fitur 1: Pilih Manual</h4>
+                    <p class="text-sm text-slate-600">Pilih bahan makanan dengan menceklisnya. AI akan menyusun resep
+                        terenak.</p>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                    <h4 class="font-bold text-blue-700 mb-2">Fitur 2: Scan Bahan</h4>
+                    <p class="text-sm text-slate-600">Arahkan kamera ke bahan masakan, AI akan memberikan rekomendasi
+                        menu.</p>
+                </div>
+                <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                    <h4 class="font-bold text-emerald-700 mb-2">Fitur 3: Menu Kost</h4>
+                    <p class="text-sm text-slate-600">Klik nama makanan dewa anak kos, langsung keluar resep
+                        pembuatannya.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="pengaturan-modal"
+        class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
+        <div
+            class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-gear text-slate-500 mr-2"></i>
+                    Pengaturan</h3><button id="btn-tutup-pengaturan" class="text-slate-400 hover:text-red-500"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-center text-slate-400">MasakApa.ai v2.0 - Dibuat untuk Anak Kos</p>
+        </div>
+    </div>
+    <div id="error-modal"
+        class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0 duration-300">
+        <div
+            class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300 text-center border-t-4 border-red-500">
+            <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4"><i
+                    class="fa-solid fa-triangle-exclamation text-4xl text-red-500"></i></div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Waduh, Koki Pusing!</h3>
+            <p id="error-message" class="text-slate-500 text-sm mb-6">Sistem sedang sibuk.</p><button
+                id="btn-close-modal"
+                class="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold py-3 rounded-xl shadow-md">Tutup</button>
+        </div>
+    </div>
+
+    <script src="/js/kulkas.js?v=23"></script>
+</body>
+
+</html>

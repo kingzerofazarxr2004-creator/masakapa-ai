@@ -1,0 +1,55 @@
+/* =========================================
+   KHUSUS LAYAR HP KECIL (MOBILE FIRST)
+   Maksimal lebar layar 640px
+   ========================================= */
+@media (max-width: 640px) {
+
+    /* Memperbesar area sentuh tombol agar jari tidak meleset */
+    button,
+    .cursor-pointer div {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Mematikan efek hover berkilau di HP agar tidak "nyangkut" setelah disentuh */
+    .btn-shine:hover::after {
+        display: none;
+    }
+
+    /* Merapikan jarak antar chip bahan makanan agar tidak berdesakan di layar sempit */
+    .chip-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+}
+
+/* =========================================
+   KHUSUS LAYAR TABLET & DESKTOP 
+   Minimal lebar layar 768px
+   ========================================= */
+@media (min-width: 768px) {
+
+    /* Mengubah susunan chip menjadi Grid rapi di layar lebar */
+    .chip-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 16px;
+    }
+
+    /* Membesarkan ukuran area drag & drop foto */
+    .upload-area {
+        min-height: 250px;
+        padding: 40px;
+    }
+
+    /* Efek melayang tambahan pada kartu utama */
+    .card-hover-float:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+    }
+}

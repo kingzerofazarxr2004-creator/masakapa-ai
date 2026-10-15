@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MasakApa.ai - Koki AI Pribadimu</title>
+    <!-- Framework & Ikon -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS Kustom Kita -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 overflow-x-hidden">
+    <!-- Navbar -->
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center glass-effect sticky top-0 z-50">
+        <div class="text-2xl font-bold text-orange-500"><i class="fa-solid fa-fire-burner mr-2"></i>MasakApa.ai</div>
+        <a href="/login.html"
+            class="px-6 py-2 bg-orange-500 text-white font-semibold rounded-full hover:bg-orange-600 transition-all shadow-md hover:shadow-lg">Masuk</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="container mx-auto px-6 py-16 md:py-32 flex flex-col-reverse md:flex-row items-center gap-12">
+        <div class="w-full md:w-1/2 text-center md:text-left fade-in-up">
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6 text-slate-900">
+                Pusing mikirin <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">masak apa hari
+                    ini?</span>
+            </h1>
+            <p class="text-lg text-slate-600 mb-8">
+                Cukup ceklis bahan yang ada di kosanmu, biarkan AI kami meracik resep lezat, murah, dan anti-gagal ala
+                anak kos!
+            </p>
+            <div class="flex justify-center md:justify-start gap-4">
+                <a href="/login.html"
+                    class="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-full hover:scale-105 transition-transform shadow-lg shadow-orange-500/30 btn-shine">
+                    <i class="fa-solid fa-rocket mr-2"></i> Mulai Masak Sekarang
+                </a>
+            </div>
+        </div>
+        <div class="w-full md:w-1/2 flex justify-center fade-in-up delay-1">
+            <div class="text-[150px] md:text-[200px] floating drop-shadow-2xl no-select">👨‍🍳</div>
+        </div>
+    </header>
+</body>
+
+</html>

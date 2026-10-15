@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. Mengunci seluruh database secara default (Tolak semua akses)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Memberikan izin KHUSUS pada koleksi 'users'
+    // {userId} adalah ID unik milik pengguna (UID)
+    // {document=**} memastikan aturan ini juga berlaku untuk sub-koleksi seperti 'favorit'
+    match /users/{userId}/{document=**} {
+      
+      // SYARAT AKSES:
+      // a. request.auth != null -> Pengguna harus sudah login (punya token sah)
+      // b. request.auth.uid == userId -> UID pengguna harus sama persis dengan nama folder yang mau dibuka
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+    }
+  }
+}
