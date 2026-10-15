@@ -1,6 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const helmet = require('helmet'); // [TAMBAHAN BARU] Memanggil Helmet
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // Memuat kunci rahasia dari .env
 dotenv.config();
