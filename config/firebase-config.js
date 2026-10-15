@@ -3,7 +3,7 @@ const { getFirestore } = require('firebase-admin/firestore');
 const { getAuth } = require('firebase-admin/auth');
 
 // Memanggil KTP rahasia
-const serviceAccount = require('../serviceAccountKey.json');
+const serviceAccount = JSON.parse(process.env.FIREBASE_JSON);
 
 // Menyalakan Firebase dengan cara baru (Modular)
 initializeApp({
