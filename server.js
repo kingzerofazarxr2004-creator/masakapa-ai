@@ -9,8 +9,12 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// 2. PASANG HELMET (Dengan pengamanan yang dilonggarkan untuk CSS)
-app.use(helmet({ contentSecurityPolicy: false }));
+// 2. PASANG HELMET (Dengan pengamanan yang dilonggarkan untuk CSS & Popup Login Google)
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginEmbedderPolicy: false
+}));
 
 // Middleware agar bisa membaca folder public dan menerima data JSON
 app.use(express.static('public'));
