@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - MasakApa.ai</title>
+    <title>Dashboard Kulkas Virtual - MasakApa.ai</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/responsive.css">
@@ -18,12 +19,21 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        input:checked+div {
-            background-color: #f97316;
-            color: white;
-            border-color: #f97316;
-            box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.4);
-            transform: scale(1.05);
+        /* Gaya Chip Bahan & Alat ketika dicentang */
+        input:checked+.chip-box {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: #ffffff;
+            border-color: #ea580c;
+            box-shadow: 0 6px 15px -3px rgba(249, 115, 22, 0.35);
+            transform: translateY(-1px);
+        }
+
+        input:checked+.chip-box .chip-icon-uncheck {
+            display: none;
+        }
+
+        input:checked+.chip-box .chip-icon-check {
+            display: inline-flex !important;
         }
 
         input[type="file"]::file-selector-button {
@@ -72,265 +82,608 @@
 
 <body class="bg-slate-50 min-h-screen pb-24 relative">
 
-    <nav class="bg-white shadow-sm sticky top-0 z-40 glass-effect">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="font-bold text-xl text-orange-500"><i class="fa-solid fa-box-open mr-2"></i>Kulkas Virtual</div>
-            <div class="flex items-center gap-4">
+    <!-- Dekorasi Latar Belakang Halus -->
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-orange-200/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl pointer-events-none"></div>
 
+    <!-- NAVBAR ATAS -->
+    <nav class="bg-white/90 shadow-sm sticky top-0 z-40 glass-effect border-b border-slate-100">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center max-w-4xl">
+            <a href="/dashboard.html" class="flex items-center gap-2.5 font-extrabold text-xl text-slate-800">
+                <span
+                    class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-500 to-red-500 text-white flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-box-open text-sm"></i>
+                </span>
+                <span>Kulkas <span class="text-orange-500">Virtual</span></span>
+            </a>
+
+            <div class="flex items-center gap-3">
                 <!-- TOMBOL BUKU RESEP FAVORIT -->
-                <button id="btn-buka-favorit" class="text-slate-500 hover:text-orange-500 transition-colors relative"><i
-                        class="fa-solid fa-heart text-xl"></i></button>
+                <button id="btn-buka-favorit"
+                    class="px-3.5 py-2 rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-100 transition-all flex items-center gap-2 text-xs font-bold border border-orange-100">
+                    <i class="fa-solid fa-heart text-red-500 text-sm"></i>
+                    <span class="hidden sm:inline">Buku Resepku</span>
+                </button>
 
+                <!-- PROFIL & DROPDOWN -->
                 <div class="relative">
-                    <img src="https://ui-avatars.com/api/?name=User&background=f97316&color=fff"
-                        class="w-10 h-10 rounded-full border-2 border-orange-200 object-cover shadow-sm cursor-pointer hover:border-orange-500 transition-colors"
-                        alt="Profile" id="user-avatar">
+                    <div class="flex items-center gap-2 cursor-pointer p-1 rounded-full hover:bg-slate-100 transition-colors"
+                        id="avatar-trigger">
+                        <img src="https://ui-avatars.com/api/?name=Koki+Kos&background=f97316&color=fff"
+                            class="w-9 h-9 rounded-full border-2 border-orange-300 object-cover shadow-sm" alt="Profile"
+                            id="user-avatar">
+                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 mr-1 hidden sm:inline"></i>
+                    </div>
+
                     <div id="dropdown-profil"
-                        class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 hidden flex-col overflow-hidden z-50 transform origin-top-right transition-all">
+                        class="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 hidden flex-col overflow-hidden z-50 transform origin-top-right transition-all">
+                        <div class="px-4 py-3 bg-slate-50 border-b border-slate-100">
+                            <p class="text-xs font-bold text-slate-800 truncate" id="dropdown-user-name">Koki Anak Kos
+                            </p>
+                            <p class="text-[11px] text-slate-400 truncate" id="dropdown-user-email">Mode Hemat Aktif</p>
+                        </div>
                         <button id="btn-buka-panduan"
-                            class="text-left px-4 py-3 text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-600 border-b border-slate-50"><i
-                                class="fa-solid fa-book-open text-orange-400 mr-2 w-4"></i> Cara Pakai</button>
+                            class="text-left px-4 py-3 text-xs font-semibold text-slate-700 hover:bg-orange-50 hover:text-orange-600 border-b border-slate-50 flex items-center gap-2.5">
+                            <i class="fa-solid fa-book-open text-orange-400 w-4"></i> Panduan Penggunaan
+                        </button>
                         <button id="btn-buka-pengaturan"
-                            class="text-left px-4 py-3 text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-600 border-b border-slate-50"><i
-                                class="fa-solid fa-gear text-slate-400 mr-2 w-4"></i> Pengaturan</button>
+                            class="text-left px-4 py-3 text-xs font-semibold text-slate-700 hover:bg-orange-50 hover:text-orange-600 border-b border-slate-50 flex items-center gap-2.5">
+                            <i class="fa-solid fa-sliders text-blue-500 w-4"></i> Pengaturan Dapur & Akun
+                        </button>
                         <button id="btn-logout"
-                            class="text-left px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50"><i
-                                class="fa-solid fa-arrow-right-from-bracket mr-2 w-4"></i> Keluar</button>
+                            class="text-left px-4 py-3 text-xs font-semibold text-red-600 hover:bg-red-50 flex items-center gap-2.5">
+                            <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Keluar Akun
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-4 py-8 max-w-3xl">
-        <div class="flex bg-white rounded-2xl p-1 shadow-sm mb-6 no-select">
-            <button id="tab-manual"
-                class="flex-1 py-3 text-center rounded-xl bg-orange-100 text-orange-600 font-semibold text-sm transition-all"><i
-                    class="fa-solid fa-check-square mr-2"></i>Pilih Manual</button>
-            <button id="tab-scan"
-                class="flex-1 py-3 text-center rounded-xl text-slate-500 font-medium text-sm hover:bg-slate-50 transition-all"><i
-                    class="fa-solid fa-camera mr-2"></i>Scan Bahan</button>
-            <button id="tab-menu"
-                class="flex-1 py-3 text-center rounded-xl text-slate-500 font-medium text-sm hover:bg-slate-50 transition-all"><i
-                    class="fa-solid fa-utensils mr-2"></i>Menu Kost</button>
+    <!-- KONTEN UTAMA DASHBOARD -->
+    <main class="container mx-auto px-4 py-6 max-w-4xl relative z-10">
+
+        <!-- BANNER SAPAAN DINAMIS -->
+        <div
+            class="bg-gradient-to-r from-slate-900 via-slate-800 to-orange-950 rounded-3xl p-6 mb-6 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center text-3xl shrink-0 border border-white/15">
+                    👨‍🍳
+                </div>
+                <div>
+                    <span
+                        class="px-2.5 py-0.5 rounded-full bg-orange-500/20 border border-orange-400/30 text-orange-300 text-[10px] font-bold uppercase tracking-wider">
+                        Dapur Pintar AI
+                    </span>
+                    <h1 class="text-lg md:text-xl font-bold mt-1" id="greeting-title">Halo, Koki Kosan! Mau masak apa
+                        kita?</h1>
+                    <p class="text-xs text-slate-300 mt-0.5">Pilih bahan manual, scan foto kulkas, atau pilih menu
+                        instan di bawah.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 bg-white/10 px-4 py-2.5 rounded-2xl border border-white/10 shrink-0">
+                <i class="fa-solid fa-bolt text-amber-400 text-sm"></i>
+                <div class="text-left">
+                    <div class="text-[10px] text-slate-300">Status AI</div>
+                    <div class="text-xs font-bold text-emerald-400">Gemini Siap Meracik</div>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100 card-hover-float min-h-[400px]">
+        <!-- TAB NAVIGASI 3 FITUR UTAMA -->
+        <div
+            class="grid grid-cols-3 bg-white rounded-2xl p-1.5 shadow-sm border border-slate-200/70 mb-6 no-select gap-1.5">
+            <button id="tab-manual"
+                class="py-3 px-2 text-center rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-xs sm:text-sm shadow-sm transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-list-check"></i>
+                <span>1. Pilih Manual</span>
+            </button>
+            <button id="tab-scan"
+                class="py-3 px-2 text-center rounded-xl text-slate-600 font-semibold text-xs sm:text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-camera"></i>
+                <span>2. Scan Bahan</span>
+            </button>
+            <button id="tab-menu"
+                class="py-3 px-2 text-center rounded-xl text-slate-600 font-semibold text-xs sm:text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-utensils"></i>
+                <span>3. Menu Kost</span>
+            </button>
+        </div>
 
-            <div id="section-manual" class="block fade-in-up">
-                <h2 class="text-xl font-bold text-slate-800 mb-2">Bahan apa yang kamu punya?</h2>
-                <p class="text-sm text-slate-500 mb-6">Pilih bahan yang tersedia, AI kami akan memikirkan sisanya.</p>
-                <form id="form-masak">
-                    <div id="kategori-bahan-container"
-                        class="space-y-6 mb-8 max-h-[55vh] overflow-y-auto custom-scroll pr-2"></div>
+        <!-- KARTU UTAMA FITUR -->
+        <div class="bg-white rounded-3xl p-5 md:p-8 shadow-sm border border-slate-200/70 min-h-[440px]">
 
-                    <!-- OPSI EKSTRA -->
-                    <div class="bg-orange-50/70 border border-orange-100 rounded-2xl p-4 mb-6 transition-all">
-                        <div class="flex items-center justify-between cursor-pointer" id="btn-toggle-opsi">
-                            <h3 class="font-bold text-orange-800 text-sm"><i class="fa-solid fa-fire-burner mr-2"></i>
-                                Opsi Ekstra Anak Kos (Opsional)</h3>
-                            <i class="fa-solid fa-chevron-down text-orange-500 transition-transform duration-300"
-                                id="icon-toggle-opsi"></i>
+            <!-- PANEL GLOBAL SINKRON: OPSI EKSTRA ANAK KOS (Berlaku untuk Fitur 1, 2, dan 3!) -->
+            <div
+                class="bg-gradient-to-r from-orange-50/90 to-amber-50/70 border border-orange-200/80 rounded-2xl p-4 mb-6 transition-all">
+                <div class="flex items-center justify-between cursor-pointer no-select" id="btn-toggle-opsi">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-sliders text-sm"></i>
                         </div>
-                        <div id="area-opsi-kos"
-                            class="hidden mt-4 space-y-4 fade-in-up border-t border-orange-200/50 pt-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-600 mb-2">Peralatan di Kosanmu:</label>
-                                <div class="chip-container no-select" id="wadah-alat">
-                                    <label class="cursor-pointer"><input type="checkbox" name="alat" value="Rice Cooker"
-                                            class="hidden">
-                                        <div
-                                            class="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all">
-                                            🍚 Rice Cooker</div>
-                                    </label>
-                                    <label class="cursor-pointer"><input type="checkbox" name="alat"
-                                            value="Kompor 1 Tungku" class="hidden">
-                                        <div
-                                            class="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all">
-                                            ♨️ Kompor Tungku</div>
-                                    </label>
-                                    <label class="cursor-pointer"><input type="checkbox" name="alat" value="Panci Rebus"
-                                            class="hidden">
-                                        <div
-                                            class="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all">
-                                            🍲 Panci</div>
-                                    </label>
-                                    <label class="cursor-pointer"><input type="checkbox" name="alat" value="Wajan"
-                                            class="hidden">
-                                        <div
-                                            class="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all">
-                                            🍳 Wajan</div>
-                                    </label>
-                                    <label class="cursor-pointer"><input type="checkbox" name="alat" value="Blender"
-                                            class="hidden">
-                                        <div
-                                            class="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all">
-                                            🌪️ Blender</div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-600 mb-2">Budget Beli Tambahan Maksimal
-                                    (Rp):</label>
-                                <input type="number" id="input-budget" placeholder="Contoh: 15000"
-                                    class="w-full px-4 py-2.5 rounded-xl border border-orange-200 focus:outline-none focus:border-orange-500 text-sm bg-white">
-                            </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-2">
+                                Filter Kondisi Anak Kos (Alat & Budget)
+                                <span id="badge-filter-aktif"
+                                    class="hidden px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-bold">Aktif</span>
+                            </h3>
+                            <p class="text-[11px] text-slate-500">Otomatis diterapkan pada Pilih Manual, Scan Bahan,
+                                maupun Menu Kost</p>
                         </div>
                     </div>
+                    <i class="fa-solid fa-chevron-down text-orange-500 transition-transform duration-300"
+                        id="icon-toggle-opsi"></i>
+                </div>
+
+                <div id="area-opsi-kos" class="hidden mt-4 pt-4 border-t border-orange-200/60 space-y-4 fade-in-up">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-2">
+                            <i class="fa-solid fa-plug-circle-check text-orange-500 mr-1"></i> Peralatan Masak yang
+                            Tersedia di Kosanmu:
+                        </label>
+                        <div class="chip-container no-select" id="wadah-alat">
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="alat" value="Rice Cooker" class="hidden">
+                                <div
+                                    class="chip-box px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all flex items-center justify-between">
+                                    <span>🍚 Rice Cooker</span>
+                                    <i class="fa-solid fa-check hidden chip-icon-check text-[10px]"></i>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="alat" value="Kompor 1 Tungku" class="hidden">
+                                <div
+                                    class="chip-box px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all flex items-center justify-between">
+                                    <span>♨️ Kompor Tungku</span>
+                                    <i class="fa-solid fa-check hidden chip-icon-check text-[10px]"></i>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="alat" value="Panci Rebus" class="hidden">
+                                <div
+                                    class="chip-box px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all flex items-center justify-between">
+                                    <span>🍲 Panci Rebus</span>
+                                    <i class="fa-solid fa-check hidden chip-icon-check text-[10px]"></i>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="alat" value="Wajan" class="hidden">
+                                <div
+                                    class="chip-box px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all flex items-center justify-between">
+                                    <span>🍳 Wajan</span>
+                                    <i class="fa-solid fa-check hidden chip-icon-check text-[10px]"></i>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="alat" value="Blender" class="hidden">
+                                <div
+                                    class="chip-box px-3 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all flex items-center justify-between">
+                                    <span>🌪️ Blender</span>
+                                    <i class="fa-solid fa-check hidden chip-icon-check text-[10px]"></i>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                                <i class="fa-solid fa-wallet text-orange-500 mr-1"></i> Budget Belanja Tambahan Maksimal
+                                (Rp):
+                            </label>
+                            <input type="number" id="input-budget" placeholder="Contoh: 15000"
+                                class="w-full px-4 py-2.5 rounded-xl border border-orange-200 focus:outline-none focus:border-orange-500 text-xs sm:text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                                <i class="fa-solid fa-pepper-hot text-red-500 mr-1"></i> Preferensi Level Pedas:
+                            </label>
+                            <select id="select-pedas"
+                                class="w-full px-4 py-2.5 rounded-xl border border-orange-200 focus:outline-none focus:border-orange-500 text-xs sm:text-sm bg-white font-medium text-slate-700">
+                                <option value="">Normal / Bebas</option>
+                                <option value="Tidak Pedas (Ramah Lambung)">Tidak Pedas (Ramah Lambung)</option>
+                                <option value="Pedas Sedang">Pedas Sedang Nikmat</option>
+                                <option value="Ekstra Pedas Nampol">Ekstra Pedas Nampol 🔥</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 FITUR 1: PILIH MANUAL (300+ BAHAN)
+                 ========================================== -->
+            <div id="section-manual" class="block fade-in-up">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h2 class="text-lg md:text-xl font-extrabold text-slate-800">Bahan apa yang ada di kosanmu?</h2>
+                        <p class="text-xs text-slate-500">Klik bahan untuk memilih. Koki AI akan menyusun resep terbaik
+                            untukmu.</p>
+                    </div>
+
+                    <!-- Badge Penghitung Bahan Terpilih -->
+                    <div class="flex items-center gap-2 self-start sm:self-auto">
+                        <span id="counter-bahan"
+                            class="px-3.5 py-1.5 rounded-full bg-orange-100 text-orange-700 font-bold text-xs border border-orange-200">
+                            0 Bahan Dipilih
+                        </span>
+                        <button type="button" id="btn-reset-bahan"
+                            class="hidden px-3 py-1.5 rounded-full bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs font-semibold transition-colors">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LIVE SEARCH BAR BAHAN -->
+                <div class="relative mb-5">
+                    <i
+                        class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="search-bahan"
+                        placeholder="Cari cepat dari 300+ bahan (contoh: telur, sosis, tahu, cabai)..."
+                        class="w-full pl-11 pr-10 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:border-orange-500 text-xs sm:text-sm transition-all">
+                    <button type="button" id="btn-clear-search"
+                        class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+
+                <form id="form-masak">
+                    <div id="kategori-bahan-container"
+                        class="space-y-6 mb-6 max-h-[52vh] overflow-y-auto custom-scroll pr-2">
+                        <!-- Dirender dinamis oleh kulkas.js -->
+                    </div>
+
                     <button type="submit" id="btn-submit-manual"
-                        class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-slate-800 transition-all flex justify-center items-center gap-2 btn-shine"><i
-                            class="fa-solid fa-wand-magic-sparkles text-orange-400"></i> Racik Resep Sekarang!</button>
+                        class="w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2.5 btn-shine">
+                        <i class="fa-solid fa-wand-magic-sparkles text-orange-400"></i>
+                        <span>Racik Resep Sekarang!</span>
+                    </button>
                 </form>
             </div>
 
+            <!-- ==========================================
+                 FITUR 2: SCAN BAHAN (KAMERA & GALERI)
+                 ========================================== -->
             <div id="section-scan" class="hidden fade-in-up">
                 <div id="area-upload-foto">
-                    <h2 class="text-xl font-bold text-slate-800 mb-2">Pindai Bahan Makanan 📸</h2>
-                    <p class="text-sm text-slate-500 mb-6">Arahkan kamera ke bahan makanan atau pilih dari galeri, Koki
-                        AI akan menebak masakan yang cocok.</p>
-                    <div id="area-pilihan-scan" class="flex gap-4 mb-6"><button id="btn-buka-kamera" type="button"
-                            class="flex-1 bg-white border-2 border-orange-200 hover:border-orange-500 hover:bg-orange-50 rounded-2xl p-6 flex flex-col items-center justify-center transition-all group shadow-sm"><i
-                                class="fa-solid fa-camera-viewfinder text-3xl text-orange-500 mb-2 group-hover:scale-110 transition-transform"></i><span
-                                class="text-sm font-bold text-slate-700">Kamera</span></button><label
-                            class="flex-1 cursor-pointer bg-white border-2 border-slate-200 hover:border-orange-500 hover:bg-orange-50 rounded-2xl p-6 flex flex-col items-center justify-center transition-all group shadow-sm"><i
-                                class="fa-regular fa-images text-3xl text-slate-500 mb-2 group-hover:scale-110 transition-transform"></i><span
-                                class="text-sm font-bold text-slate-700">Galeri</span><input id="input-galeri"
-                                type="file" accept="image/*" class="hidden" /></label></div>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+                        <div>
+                            <h2 class="text-lg md:text-xl font-extrabold text-slate-800">Pindai Bahan Makanan dengan AI
+                                📸</h2>
+                            <p class="text-xs text-slate-500">Jepret foto bahan di meja/kulkasmu, Vision AI kami akan
+                                mengenali bahannya secara instan.</p>
+                        </div>
+                        <span
+                            class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-200 text-xs font-bold self-start sm:self-auto">
+                            <i class="fa-solid fa-eye mr-1"></i> Gemini Vision
+                        </span>
+                    </div>
+
+                    <!-- Tombol Pilihan Kamera & Galeri (Ikon Sudah Diperbaiki & Dipercantik) -->
+                    <div id="area-pilihan-scan" class="grid sm:grid-cols-2 gap-4 mb-6">
+                        <button id="btn-buka-kamera" type="button"
+                            class="bg-gradient-to-br from-orange-50/70 to-white border-2 border-orange-200 hover:border-orange-500 hover:shadow-md rounded-3xl p-6 flex flex-col items-center justify-center transition-all group text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-orange-500 to-red-500 text-white flex items-center justify-center text-2xl mb-3 shadow-md shadow-orange-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-camera"></i>
+                            </div>
+                            <span class="text-base font-extrabold text-slate-800">Buka Kamera Langsung</span>
+                            <span class="text-xs text-slate-500 mt-1">Arahkan kamera HP/Laptop ke bahan masakan</span>
+                        </button>
+
+                        <label
+                            class="cursor-pointer bg-gradient-to-br from-slate-50 to-white border-2 border-slate-200 hover:border-orange-500 hover:shadow-md rounded-3xl p-6 flex flex-col items-center justify-center transition-all group text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-slate-800 group-hover:bg-orange-500 text-white flex items-center justify-center text-2xl mb-3 shadow-md transition-all group-hover:scale-110">
+                                <i class="fa-solid fa-images"></i>
+                            </div>
+                            <span class="text-base font-extrabold text-slate-800">Pilih Foto dari Galeri</span>
+                            <span class="text-xs text-slate-500 mt-1">Unggah foto bahan makanan (JPG / PNG)</span>
+                            <input id="input-galeri" type="file" accept="image/*" class="hidden" />
+                        </label>
+                    </div>
+
+                    <!-- Tips Singkat Agar Scan Akurat -->
+                    <div class="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 flex items-center gap-3 mb-4">
+                        <div
+                            class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>Tips Koki AI:</strong> Letakkan bahan makanan di tempat terang agar kamera dapat
+                            mendeteksi kombinasi menu anak kos secara akurat.
+                        </p>
+                    </div>
+
+                    <!-- Viewfinder Kamera Live -->
                     <div id="kamera-container" class="hidden flex flex-col items-center mb-6 fade-in-up">
                         <div
-                            class="relative w-full h-[400px] bg-black rounded-3xl overflow-hidden shadow-inner border border-slate-200 flex items-center justify-center">
+                            class="relative w-full h-[380px] bg-slate-950 rounded-3xl overflow-hidden shadow-inner border-2 border-orange-300 flex items-center justify-center">
                             <video id="kamera-video"
                                 class="w-full h-full object-cover transition-transform duration-300" autoplay
-                                playsinline></video><button type="button" id="btn-switch-kamera"
-                                class="absolute top-4 right-4 bg-black/40 backdrop-blur text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-black/60 transition-all z-30 active:scale-95 border border-white/20"><i
-                                    class="fa-solid fa-camera-rotate text-xl"></i></button>
+                                playsinline></video>
+                            <button type="button" id="btn-switch-kamera"
+                                class="absolute top-4 right-4 bg-black/50 backdrop-blur text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md hover:bg-black/70 transition-all z-30 border border-white/20">
+                                <i class="fa-solid fa-camera-rotate text-lg"></i>
+                            </button>
                             <div class="absolute inset-0 pointer-events-none">
-                                <div class="absolute inset-0 border-4 border-orange-500/30 rounded-3xl z-10 m-4"></div>
                                 <div
-                                    class="absolute left-4 right-4 h-1 bg-orange-400 shadow-[0_0_15px_rgba(249,115,22,1)] z-20 animate-scanline">
+                                    class="absolute inset-0 border-2 border-dashed border-orange-400/50 rounded-3xl z-10 m-5">
+                                </div>
+                                <div
+                                    class="absolute left-5 right-5 h-1 bg-orange-400 shadow-[0_0_15px_rgba(249,115,22,1)] z-20 animate-scanline">
                                 </div>
                             </div>
                         </div>
-                        <div class="flex gap-3 mt-4 w-full"><button type="button" id="btn-tutup-kamera"
-                                class="flex-1 bg-slate-200 text-slate-700 py-3 rounded-xl font-bold hover:bg-slate-300 transition-colors">Batal</button><button
-                                type="button" id="btn-jepret-kamera"
-                                class="flex-[2] bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 shadow-md transition-colors btn-shine"><i
-                                    class="fa-solid fa-camera mr-2"></i> Jepret Bahan</button></div><canvas
-                            id="kamera-canvas" class="hidden"></canvas>
+                        <div class="flex gap-3 mt-4 w-full">
+                            <button type="button" id="btn-tutup-kamera"
+                                class="flex-1 bg-slate-200 text-slate-700 py-3.5 rounded-2xl font-bold hover:bg-slate-300 transition-colors text-sm">
+                                Batal
+                            </button>
+                            <button type="button" id="btn-jepret-kamera"
+                                class="flex-[2] bg-gradient-to-r from-orange-500 to-red-500 text-white py-3.5 rounded-2xl font-bold shadow-md transition-all btn-shine text-sm">
+                                <i class="fa-solid fa-camera mr-2"></i> Ambil Foto Bahan
+                            </button>
+                        </div>
+                        <canvas id="kamera-canvas" class="hidden"></canvas>
                     </div>
+
+                    <!-- Preview Foto Sebelum Dikirim -->
                     <div id="preview-container"
-                        class="hidden relative w-full h-64 bg-slate-100 rounded-3xl overflow-hidden mb-6 shadow-inner border border-slate-200">
-                        <img id="preview-foto" class="w-full h-full object-cover" alt="Preview"><button
-                            id="btn-batal-foto"
-                            class="absolute top-3 right-3 bg-white/80 backdrop-blur text-slate-700 w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:bg-red-500 hover:text-white transition-colors"><i
-                                class="fa-solid fa-times text-lg"></i></button>
+                        class="hidden relative w-full h-72 bg-slate-900 rounded-3xl overflow-hidden mb-5 shadow-md border-2 border-orange-200">
+                        <img id="preview-foto" class="w-full h-full object-contain" alt="Preview">
+                        <button id="btn-batal-foto"
+                            class="absolute top-3 right-3 bg-white/90 backdrop-blur text-slate-700 w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:bg-red-500 hover:text-white transition-colors">
+                            <i class="fa-solid fa-times text-lg"></i>
+                        </button>
                     </div>
+
                     <button id="btn-submit-scan"
-                        class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-slate-800 transition-all flex justify-center items-center gap-2 btn-shine hidden"><i
-                            class="fa-solid fa-radar text-orange-400"></i> Analisis Gambar Ini!</button>
+                        class="w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2 btn-shine hidden">
+                        <i class="fa-solid fa-wand-magic-sparkles text-orange-400"></i>
+                        <span>Analisis Bahan & Cari Resep!</span>
+                    </button>
                 </div>
+
+                <!-- Hasil Rekomendasi dari Scan Kamera -->
                 <div id="area-hasil-scan" class="hidden fade-in-up">
-                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl mb-6 flex items-start gap-3"><i
-                            class="fa-solid fa-circle-check text-emerald-500 text-2xl mt-1"></i>
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl mb-5 flex items-start gap-3">
+                        <i class="fa-solid fa-circle-check text-emerald-500 text-2xl mt-0.5"></i>
                         <div>
-                            <h4 class="font-bold text-emerald-800">Bahan Berhasil Dikenali!</h4>
-                            <p class="text-sm text-emerald-700 leading-snug">AI merekomendasikan masakan berikut. Pilih
-                                salah satu untuk melihat resepnya.</p>
+                            <h4 class="font-bold text-emerald-900 text-sm">Bahan Makanan Berhasil Dikenali!</h4>
+                            <p class="text-xs text-emerald-700">Klik salah satu menu di bawah untuk langsung meracik
+                                resep lengkapnya (otomatis mengikuti filter alat & budget kosmu).</p>
                         </div>
                     </div>
-                    <h3 class="font-bold text-slate-700 mb-3"><i class="fa-solid fa-star text-yellow-400 mr-1"></i>
-                        Rekomendasi Koki AI:</h3>
-                    <div class="flex flex-col gap-3 mb-6" id="daftar-menu-scan"></div>
+                    <h3 class="font-bold text-slate-800 text-sm mb-3">
+                        <i class="fa-solid fa-fire text-orange-500 mr-1.5"></i> Rekomendasi Menu dari Foto Kulkasmu:
+                    </h3>
+                    <div class="grid sm:grid-cols-2 gap-3 mb-6" id="daftar-menu-scan"></div>
                     <button id="btn-scan-ulang"
-                        class="w-full py-3 text-slate-500 hover:text-orange-500 hover:bg-orange-50 font-semibold rounded-xl transition-colors border border-transparent hover:border-orange-200"><i
-                            class="fa-solid fa-rotate-right mr-1"></i> Scan Foto Lainnya</button>
+                        class="w-full py-3.5 text-slate-600 hover:text-orange-600 bg-slate-100 hover:bg-orange-50 font-bold rounded-2xl transition-colors text-xs sm:text-sm">
+                        <i class="fa-solid fa-rotate-right mr-1.5"></i> Scan Foto Bahan Lainnya
+                    </button>
                 </div>
             </div>
 
+            <!-- ==========================================
+                 FITUR 3: MENU KOST (50+ RESEP PASTI JADI)
+                 ========================================== -->
             <div id="section-menu" class="hidden fade-in-up">
-                <h2 class="text-xl font-bold text-slate-800 mb-2">Resep Pasti Jadi 🍲</h2>
-                <p class="text-sm text-slate-500 mb-6">Pilih salah satu dari daftar masakan dewa anak kost ini, langsung
-                    keluar resepnya.</p>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[60vh] overflow-y-auto custom-scroll pr-2"
-                    id="daftar-menu-kost"></div>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                    <div>
+                        <h2 class="text-lg md:text-xl font-extrabold text-slate-800">Katalog Menu Dewa Anak Kos 🍲</h2>
+                        <p class="text-xs text-slate-500">Pilih menu legendaris anak kos, AI akan menyesuaikan langkah
+                            masaknya dengan alat & budgetmu.</p>
+                    </div>
+                    <span
+                        class="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold self-start sm:self-auto">
+                        50 Menu Populer
+                    </span>
+                </div>
+
+                <!-- LIVE SEARCH BAR MENU KOST -->
+                <div class="relative mb-5">
+                    <i
+                        class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="search-menu-kost"
+                        placeholder="Cari menu kos (contoh: nasi goreng, mie, telur, ayam, tahu)..."
+                        class="w-full pl-11 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:border-orange-500 text-xs sm:text-sm transition-all">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 max-h-[55vh] overflow-y-auto custom-scroll pr-2"
+                    id="daftar-menu-kost">
+                    <!-- Dirender dinamis oleh kulkas.js -->
+                </div>
             </div>
+
         </div>
     </main>
 
-    <!-- POP UP BUKU RESEP -->
+    <!-- ==========================================
+         MODAL 1: BUKU RESEP FAVORIT
+         ========================================== -->
     <div id="favorit-modal"
         class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
         <div
             class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-slate-800"><i
-                        class="fa-solid fa-book-bookmark text-orange-500 mr-2"></i> Buku Resepku</h3>
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-9 h-9 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                    </span>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-slate-800">Buku Resepku</h3>
+                        <p class="text-[11px] text-slate-400">Tersimpan di Cloud Firestore</p>
+                    </div>
+                </div>
                 <button id="btn-tutup-favorit"
-                    class="text-slate-400 hover:text-red-500 transition-colors text-xl w-8 h-8"><i
-                        class="fa-solid fa-xmark"></i></button>
+                    class="text-slate-400 hover:text-red-500 transition-colors text-xl w-8 h-8">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <div id="daftar-favorit" class="overflow-y-auto custom-scroll pr-2 space-y-3 flex-1">
-                <!-- Data dari Firebase akan dirender di sini -->
-            </div>
+            <div id="daftar-favorit" class="overflow-y-auto custom-scroll pr-2 space-y-3 flex-1"></div>
         </div>
     </div>
 
-    <!-- Modals Lainnya -->
+    <!-- ==========================================
+         MODAL 2: PANDUAN PENGGUNAAN
+         ========================================== -->
     <div id="panduan-modal"
         class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
         <div
             class="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-slate-800"><i class="fa-solid fa-book-open text-orange-500 mr-2"></i>
-                    Panduan Fitur</h3><button id="btn-tutup-panduan"
-                    class="text-slate-400 hover:text-red-500 transition-colors text-xl w-8 h-8"><i
-                        class="fa-solid fa-xmark"></i></button>
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-100">
+                <h3 class="text-xl font-extrabold text-slate-800">
+                    <i class="fa-solid fa-book-open text-orange-500 mr-2"></i> Panduan Penggunaan
+                </h3>
+                <button id="btn-tutup-panduan"
+                    class="text-slate-400 hover:text-red-500 transition-colors text-xl w-8 h-8">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <div class="overflow-y-auto custom-scroll pr-2 space-y-6">
-                <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100">
-                    <h4 class="font-bold text-orange-700 mb-2">Fitur 1: Pilih Manual</h4>
-                    <p class="text-sm text-slate-600">Pilih bahan makanan dengan menceklisnya. AI akan menyusun resep
-                        terenak.</p>
+            <div class="overflow-y-auto custom-scroll pr-2 space-y-4">
+                <div class="bg-orange-50/70 p-4 rounded-2xl border border-orange-100">
+                    <h4 class="font-bold text-orange-800 text-sm mb-1">1. Atur Alat & Budget Kos (Opsional)</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">Buka panel Filter Kondisi Anak Kos di bagian atas
+                        untuk memilih alat masak yang kamu punya (misal hanya Rice Cooker) dan batas uang belanja
+                        ekstra.</p>
                 </div>
-                <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                    <h4 class="font-bold text-blue-700 mb-2">Fitur 2: Scan Bahan</h4>
-                    <p class="text-sm text-slate-600">Arahkan kamera ke bahan masakan, AI akan memberikan rekomendasi
-                        menu.</p>
+                <div class="bg-blue-50/70 p-4 rounded-2xl border border-blue-100">
+                    <h4 class="font-bold text-blue-800 text-sm mb-1">2. Pilih Bahan, Scan Foto, atau Klik Menu</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">Gunakan tab Pilih Manual untuk mencentang bahan,
+                        tab Scan Bahan untuk memfoto isi kulkas, atau tab Menu Kost untuk memilih masakan populer.</p>
                 </div>
-                <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
-                    <h4 class="font-bold text-emerald-700 mb-2">Fitur 3: Menu Kost</h4>
-                    <p class="text-sm text-slate-600">Klik nama makanan dewa anak kos, langsung keluar resep
-                        pembuatannya.</p>
+                <div class="bg-emerald-50/70 p-4 rounded-2xl border border-emerald-100">
+                    <h4 class="font-bold text-emerald-800 text-sm mb-1">3. Simpan ke Cloud & Bagikan ke WhatsApp</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">Resep yang sudah diracik oleh Gemini AI dapat kamu
+                        simpan ke Buku Resep Favorit atau dibagikan langsung ke teman kos lewat WhatsApp.</p>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- ==========================================
+         MODAL 3: PENGATURAN DAPUR & AKUN (PROFESSIONAL & FUNGSIONAL)
+         ========================================== -->
     <div id="pengaturan-modal"
         class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
         <div
-            class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-gear text-slate-500 mr-2"></i>
-                    Pengaturan</h3><button id="btn-tutup-pengaturan" class="text-slate-400 hover:text-red-500"><i
-                        class="fa-solid fa-xmark"></i></button>
+            class="bg-white rounded-3xl p-6 md:p-7 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[88vh]">
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+                        <i class="fa-solid fa-sliders"></i>
+                    </span>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-slate-800">Pengaturan Dapur</h3>
+                        <p class="text-[11px] text-slate-400">Preferensi otomatis akun & kosanmu</p>
+                    </div>
+                </div>
+                <button id="btn-tutup-pengaturan" class="text-slate-400 hover:text-red-500 w-8 h-8 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <p class="text-xs text-center text-slate-400">MasakApa.ai v2.0 - Dibuat untuk Anak Kos</p>
+
+            <div class="overflow-y-auto custom-scroll pr-1 space-y-5 flex-1">
+                <!-- Info Akun Aktif -->
+                <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/70 flex items-center gap-3">
+                    <img id="settings-user-avatar"
+                        src="https://ui-avatars.com/api/?name=Koki+Kos&background=f97316&color=fff"
+                        class="w-11 h-11 rounded-full border-2 border-orange-300 object-cover" alt="User">
+                    <div class="overflow-hidden">
+                        <div class="text-xs font-extrabold text-slate-800 truncate" id="settings-user-name">Koki Anak
+                            Kos</div>
+                        <div class="text-[11px] text-slate-500 truncate" id="settings-user-email">Terhubung dengan
+                            Google OAuth</div>
+                        <span
+                            class="inline-block mt-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-bold">Kuota
+                            AI: 5 Resep / Hari</span>
+                    </div>
+                </div>
+
+                <!-- Preferensi Default Anak Kos -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Preferensi Default Kosan
+                    </h4>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Alat Masak Utama yang Selalu
+                            Ada:</label>
+                        <select id="setting-default-alat"
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 focus:outline-none focus:border-orange-500 bg-white">
+                            <option value="">Tidak ada default (Pilih manual tiap masak)</option>
+                            <option value="Rice Cooker">🍚 Hanya Punya Rice Cooker</option>
+                            <option value="Kompor 1 Tungku, Wajan, Panci Rebus">🍳 Standar Kos (Kompor, Wajan, Panci)
+                            </option>
+                            <option value="Panci Rebus">🍲 Hanya Panci Listrik / Rebus</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Default Budget (Rp):</label>
+                            <input type="number" id="setting-default-budget" placeholder="Misal: 15000"
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Default Level Pedas:</label>
+                            <select id="setting-default-pedas"
+                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 focus:outline-none focus:border-orange-500 bg-white">
+                                <option value="">Normal</option>
+                                <option value="Tidak Pedas (Ramah Lambung)">Tidak Pedas</option>
+                                <option value="Pedas Sedang">Pedas Sedang</option>
+                                <option value="Ekstra Pedas Nampol">Ekstra Pedas 🔥</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manajemen Memori & Cache -->
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-bold text-slate-700">Bersihkan Sesi Resep Sementara</div>
+                        <div class="text-[11px] text-slate-400">Hapus cache resep terakhir di browser</div>
+                    </div>
+                    <button type="button" id="btn-clear-cache"
+                        class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 text-xs font-bold transition-colors">
+                        Bersihkan
+                    </button>
+                </div>
+            </div>
+
+            <div class="pt-4 mt-4 border-t border-slate-100 flex gap-2">
+                <button type="button" id="btn-simpan-pengaturan"
+                    class="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-3 rounded-xl shadow-md hover:opacity-95 transition-all text-xs sm:text-sm btn-shine">
+                    <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan & Terapkan Pengaturan
+                </button>
+            </div>
         </div>
     </div>
+
+    <!-- ==========================================
+         MODAL 4: ERROR / PERINGATAN
+         ========================================== -->
     <div id="error-modal"
         class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0 duration-300">
         <div
             class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300 text-center border-t-4 border-red-500">
-            <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4"><i
-                    class="fa-solid fa-triangle-exclamation text-4xl text-red-500"></i></div>
-            <h3 class="text-xl font-bold text-slate-800 mb-2">Waduh, Koki Pusing!</h3>
-            <p id="error-message" class="text-slate-500 text-sm mb-6">Sistem sedang sibuk.</p><button
-                id="btn-close-modal"
-                class="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold py-3 rounded-xl shadow-md">Tutup</button>
+            <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-3xl text-red-500"></i>
+            </div>
+            <h3 class="text-lg font-extrabold text-slate-800 mb-2">Perhatian Koki!</h3>
+            <p id="error-message" class="text-slate-500 text-xs sm:text-sm mb-6 leading-relaxed">Sistem sedang sibuk.
+            </p>
+            <button id="btn-close-modal"
+                class="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold py-3 rounded-xl shadow-md text-sm">
+                Mengerti
+            </button>
         </div>
     </div>
 
-    <script src="/js/kulkas.js?v=23"></script>
+    <script src="/js/kulkas.js?v=24"></script>
 </body>
 
 </html>

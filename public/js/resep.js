@@ -11,35 +11,105 @@ document.addEventListener("DOMContentLoaded", async () => {
     const kotakResep = document.getElementById('isi-resep');
     const judulResep = document.getElementById('judul-resep');
     const btnFavorit = document.getElementById('btn-simpan-favorit');
+    const btnCopyResep = document.getElementById('btn-copy-resep');
+    const badgeContainer = document.getElementById('info-filter-badges');
 
-    // Menarik status dari memori
+    // Menarik status dari memori SessionStorage
     const bahanBahan = sessionStorage.getItem('bahanDipakai');
     const menuPilihan = sessionStorage.getItem('menuPilihan');
     const resepTersimpan = sessionStorage.getItem('resepTerbaru');
     const judulBukuResep = sessionStorage.getItem('judulResepMasaLalu');
-
     const alatMasak = sessionStorage.getItem('alatMasak');
     const budgetMasak = sessionStorage.getItem('budgetMasak');
 
-    // Fungsi Render Teks AI ke HTML
-    const renderResep = (teks, judulUI) => {
-        let formatHTML = teks
-            .replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-800 font-bold">$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em class="text-orange-600">$1</em>')
-            .replace(/\n/g, '<br>');
+    // Tampilkan Badge Alat & Budget jika digunakan
+    if (badgeContainer) {
+        if (alatMasak) {
+            badgeContainer.innerHTML += `<span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm"><i class="fa-solid fa-plug-circle-bolt mr-1"></i> ${alatMasak}</span>`;
+        }
+        if (budgetMasak) {
+            badgeContainer.innerHTML += `<span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm"><i class="fa-solid fa-wallet mr-1"></i> Maks Rp${Number(budgetMasak).toLocaleString('id-ID')}</span>`;
+        }
+    }
 
+    // Fungsi Toast Notification Modern (Pengganti alert kaku)
+    function showToast(pesan, tipe = 'sukses') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        const toast = document.createElement('div');
+        const warna = tipe === 'error' ? 'bg-red-600' : 'bg-slate-900';
+        const ikon = tipe === 'error' ? 'fa-circle-exclamation text-red-200' : 'fa-circle-check text-emerald-400';
+
+        toast.className = `${warna} text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs sm:text-sm font-medium fade-in-up pointer-events-auto`;
+        toast.innerHTML = `<i class="fa-solid ${ikon}"></i><span>${pesan}</span>`;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 3200);
+    }
+
+    // Fungsi Render Teks AI ke HTML Terstruktur & Profesional
+    const renderResep = (teks, judulUI) => {
+        const barisArray = teks.split('\n');
+        let htmlTerstruktur = '<div class="space-y-3 fade-in-up">';
+
+        barisArray.forEach(baris => {
+            let clean = baris.trim();
+            if (!clean) return;
+
+            // Format bold & italic markdown
+            clean = clean
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 font-bold">$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em class="text-orange-600 font-medium">$1</em>');
+
+            // Jika baris merupakan Heading bernomor utama (contoh: 1. Nama Masakan, 2. Estimasi Biaya)
+            if (/^[1-5]\.\s/.test(clean) || /^#+\s/.test(clean)) {
+                const teksJudulBagian = clean.replace(/^#+\s/, '');
+                htmlTerstruktur += `
+                    <div class="pt-4 first:pt-0">
+                        <div class="px-4 py-2.5 bg-orange-50/90 border-l-4 border-orange-500 rounded-r-xl font-bold text-slate-900 text-sm sm:text-base">
+                            ${teksJudulBagian}
+                        </div>
+                    </div>
+                `;
+            } else if (/^[-•*]\s/.test(clean)) {
+                // Jika baris merupakan item daftar (bullet list)
+                const itemTeks = clean.replace(/^[-•*]\s/, '');
+                htmlTerstruktur += `
+                    <div class="flex items-start gap-2.5 pl-2 text-sm sm:text-base text-slate-700">
+                        <i class="fa-solid fa-check text-orange-500 text-xs mt-1.5"></i>
+                        <span>${itemTeks}</span>
+                    </div>
+                `;
+            } else {
+                htmlTerstruktur += `<p class="text-sm sm:text-base text-slate-700 leading-relaxed pl-1">${clean}</p>`;
+            }
+        });
+
+        htmlTerstruktur += '</div>';
         judulResep.innerText = judulUI;
-        kotakResep.innerHTML = `<div class="fade-in-up">${formatHTML}</div>`;
+        kotakResep.innerHTML = htmlTerstruktur;
     };
 
     const tampilkanError = (pesan) => {
         judulResep.innerText = "Gagal Meracik 😢";
-        kotakResep.innerHTML = `<div class="text-center py-10 fade-in-up"><i class="fa-solid fa-triangle-exclamation text-5xl text-red-400 mb-4"></i><p class="text-slate-600 font-medium">${pesan}</p><a href="/dashboard.html" class="mt-6 inline-block bg-orange-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-orange-600 transition-all">Kembali ke Kulkas</a></div>`;
+        kotakResep.innerHTML = `
+            <div class="text-center py-10 fade-in-up">
+                <i class="fa-solid fa-triangle-exclamation text-5xl text-red-400 mb-4"></i>
+                <p class="text-slate-600 font-medium mb-6 text-sm sm:text-base">${pesan}</p>
+                <a href="/dashboard.html" class="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-2xl font-bold shadow-md hover:bg-orange-600 transition-all text-sm">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Kulkas
+                </a>
+            </div>
+        `;
     };
 
     // LOGIKA UTAMA HALAMAN RESEP
     if (resepTersimpan) {
-        let judul = judulBukuResep ? judulBukuResep : "Resep Ajaib 🍳";
+        let judul = judulBukuResep ? judulBukuResep : "Resep Spesial Anak Kos 🍳";
         if (!judulBukuResep && menuPilihan) judul = `Resep ${menuPilihan} 🍽️`;
         else if (!judulBukuResep && bahanBahan) judul = `Kreasi ${bahanBahan.split(',')[0]} 🍳`;
         renderResep(resepTersimpan, judul);
@@ -48,19 +118,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         judulResep.innerText = `Menyiapkan Resep...`;
 
         const payloadData = { alat: alatMasak, budget: budgetMasak };
-        if (menuPilihan) { payloadData.menuPilihan = menuPilihan; }
-        else if (bahanBahan) { payloadData.bahan = bahanBahan.split(', '); }
+        if (menuPilihan) payloadData.menuPilihan = menuPilihan;
+        else if (bahanBahan) payloadData.bahan = bahanBahan.split(', ');
 
         try {
             const response = await fetch('/api/ai/generate-resep', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payloadData)
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payloadData)
             });
 
             const data = await response.json();
 
             if (response.ok) {
                 sessionStorage.setItem('resepTerbaru', data.resep);
-                let judul = "Resep Ajaib 🍳";
+                let judul = "Resep Spesial Anak Kos 🍳";
                 if (menuPilihan) judul = `Resep ${menuPilihan} 🍽️`;
                 else if (bahanBahan) judul = `Kreasi ${bahanBahan.split(',')[0]} 🍳`;
                 renderResep(data.resep, judul);
@@ -71,8 +143,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             tampilkanError('Koneksi ke Dapur AI terputus! Pastikan internetmu stabil lalu coba lagi.');
         }
     } else {
-        tampilkanError("Kamu belum memilih bahan atau menu apapun.");
+        tampilkanError("Kamu belum memilih bahan atau menu apapun di Kulkas Virtual.");
     }
+
+    // TOMBOL SALIN TEKS RESEP
+    btnCopyResep?.addEventListener('click', () => {
+        const teks = sessionStorage.getItem('resepTerbaru') || document.getElementById('resep-content').innerText;
+        if (!teks) return;
+        navigator.clipboard.writeText(teks).then(() => {
+            showToast('Teks resep berhasil disalin ke clipboard!');
+        });
+    });
 
     // LOGIKA SIMPAN KE FIRESTORE
     if (btnFavorit) {
@@ -94,7 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 const user = await getUser();
                 if (!user) {
-                    alert("Waduh! Kamu harus login menggunakan Google dulu untuk menyimpan resep.");
+                    showToast("Kamu harus login Google dulu untuk menyimpan resep!", "error");
                     btnFavorit.innerHTML = `<i class="fa-regular fa-bookmark mr-1"></i> Simpan Favorit`;
                     return;
                 }
@@ -107,13 +188,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 });
 
                 btnFavorit.innerHTML = `<i class="fa-solid fa-check mr-1"></i> Tersimpan!`;
-                btnFavorit.classList.remove('text-orange-500', 'border-orange-100', 'hover:bg-orange-50');
-                btnFavorit.classList.add('text-emerald-500', 'border-emerald-100', 'bg-emerald-50');
+                btnFavorit.classList.remove('text-orange-600', 'border-orange-200', 'hover:bg-orange-50');
+                btnFavorit.classList.add('text-emerald-600', 'border-emerald-200', 'bg-emerald-50');
                 btnFavorit.disabled = true;
+                showToast("Resep berhasil disimpan ke Buku Resep Favorit!");
 
             } catch (error) {
                 console.error("Gagal simpan ke Firestore:", error);
-                alert("Gagal menyimpan resep ke Cloud. Coba lagi nanti ya.");
+                showToast("Gagal menyimpan resep ke Cloud. Coba lagi nanti.", "error");
                 btnFavorit.innerHTML = `<i class="fa-regular fa-bookmark mr-1"></i> Simpan Favorit`;
             }
         });
@@ -124,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (btnShareWA) {
         btnShareWA.addEventListener('click', () => {
             const resepTeks = document.getElementById('resep-content').innerText;
-            const pesan = `*Chef MasakApa.ai baru saja membuatkan resep khusus untukku!* 👨‍🍳🔥\n\n${resepTeks}\n\n_Cobain AI-nya di MasakAi.com_`;
+            const pesan = `*Chef MasakApa.ai baru saja membuatkan resep khusus untukku!* 👨‍🍳🔥\n\n${resepTeks}\n\n_Diracik otomatis dengan AI MasakApa.ai_`;
             const urlWA = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesan)}`;
             window.open(urlWA, '_blank');
         });

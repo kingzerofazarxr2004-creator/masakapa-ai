@@ -1,18 +1,16 @@
 /* =========================================
    1. EFEK KACA (GLASSMORPHISM)
-   Cocok dipasang di Navbar atau Kartu Hasil Resep
    ========================================= */
 .glass-effect {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05);
 }
 
 /* =========================================
    2. ANIMASI TOMBOL MENGKILAP (SHINE EFFECT)
-   Tambahkan class "btn-shine" di tombol "Racik Resep"
    ========================================= */
 .btn-shine {
     position: relative;
@@ -27,7 +25,7 @@
     left: -100%;
     width: 50%;
     height: 100%;
-    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.35) 50%, rgba(255, 255, 255, 0) 100%);
     transform: skewX(-20deg);
     transition: all 0.5s ease;
 }
@@ -38,42 +36,38 @@
 }
 
 .btn-shine:active {
-    transform: scale(0.96);
+    transform: scale(0.97);
 }
 
 /* =========================================
    3. CUSTOM SCROLLBAR ELEGAN
-   Menggantikan scrollbar bawaan browser yang kaku
    ========================================= */
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
     background: #f8fafc;
-    /* Slate 50 */
 }
 
 ::-webkit-scrollbar-thumb {
     background: #cbd5e1;
-    /* Slate 300 */
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
-    /* Slate 400 */
 }
 
 /* =========================================
    4. ANIMASI SKELETON (LOADING AI)
-   Gunakan ini di resep.html saat menunggu API Gemini
    ========================================= */
 .skeleton-box {
     background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
     background-size: 200% 100%;
     animation: skeleton-loading 1.5s infinite linear;
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 @keyframes skeleton-loading {
@@ -86,8 +80,107 @@
     }
 }
 
-/* Mencegah teks terblokir biru saat user asal klik */
 .no-select {
     user-select: none;
     -webkit-user-select: none;
+}
+
+/* =========================================
+   5. ANIMASI KARAKTER KOKI & ELEMEN HIDUP
+   ========================================= */
+.floating {
+    animation: float 3.5s ease-in-out infinite;
+}
+
+.floating-delayed {
+    animation: float 4s ease-in-out 1.5s infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+/* Animasi tangan koki mengayunkan spatula */
+.chef-spatula-arm {
+    transform-origin: 270px 230px;
+    animation: spatulaWave 2.2s ease-in-out infinite;
+}
+
+@keyframes spatulaWave {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(-14deg) translateY(-4px);
+    }
+}
+
+/* Animasi wajan koki menggoyang masakan */
+.chef-pan-arm {
+    transform-origin: 130px 230px;
+    animation: panToss 2.2s ease-in-out infinite;
+}
+
+@keyframes panToss {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(8deg) translateY(-6px);
+    }
+}
+
+/* Animasi uap panas masakan */
+.steam-line {
+    animation: steamRise 2.5s ease-out infinite;
+}
+
+.steam-line-2 {
+    animation: steamRise 2.5s ease-out 0.8s infinite;
+}
+
+@keyframes steamRise {
+    0% {
+        transform: translateY(5px);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-18px);
+        opacity: 0;
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

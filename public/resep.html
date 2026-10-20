@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hasil Resep - MasakApa.ai</title>
+    <title>Hasil Racikan Resep AI - MasakApa.ai</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/responsive.css">
     <style>
@@ -17,69 +18,95 @@
     </style>
 </head>
 
-<body class="bg-orange-50 min-h-screen">
+<body class="bg-slate-50 min-h-screen text-slate-800 relative pb-16">
 
-    <div class="container mx-auto px-4 py-8 max-w-2xl">
-        <div class="flex items-center justify-between mb-8">
+    <!-- Dekorasi Cahaya Latar -->
+    <div class="fixed top-[-10%] right-[-10%] w-96 h-96 bg-orange-300/20 rounded-full blur-3xl pointer-events-none">
+    </div>
+
+    <!-- Wadah Toast Notification Modern -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <div class="container mx-auto px-4 py-8 max-w-2xl relative z-10">
+
+        <!-- Baris Navigasi Atas -->
+        <div class="flex items-center justify-between mb-6">
             <a href="/dashboard.html"
-                class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-slate-600 hover:text-orange-500 transition-colors">
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white rounded-2xl shadow-sm border border-slate-200/80 text-slate-700 hover:text-orange-600 hover:border-orange-200 text-xs sm:text-sm font-semibold transition-all">
                 <i class="fa-solid fa-arrow-left"></i>
+                <span>Kembali ke Kulkas</span>
             </a>
 
-            <!-- TOMBOL SIMPAN KE FIRESTORE -->
-            <button id="btn-simpan-favorit"
-                class="bg-white px-4 py-2 rounded-full shadow-sm text-sm font-semibold text-orange-500 hover:bg-orange-50 border border-orange-100 transition-all btn-shine">
-                <i class="fa-regular fa-bookmark mr-1"></i> Simpan Favorit
-            </button>
+            <div class="flex items-center gap-2">
+                <!-- Tombol Copy Resep -->
+                <button id="btn-copy-resep" type="button"
+                    class="bg-white px-3.5 py-2.5 rounded-2xl shadow-sm text-xs sm:text-sm font-semibold text-slate-600 hover:text-orange-600 border border-slate-200/80 transition-all">
+                    <i class="fa-regular fa-copy mr-1"></i> Salin
+                </button>
 
+                <!-- Tombol Simpan ke Firestore -->
+                <button id="btn-simpan-favorit" type="button"
+                    class="bg-white px-4 py-2.5 rounded-2xl shadow-sm text-xs sm:text-sm font-semibold text-orange-600 hover:bg-orange-50 border border-orange-200 transition-all btn-shine">
+                    <i class="fa-regular fa-bookmark mr-1"></i> Simpan Favorit
+                </button>
+            </div>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-lg overflow-hidden border border-slate-100 mb-6">
-            <div class="bg-gradient-to-r from-orange-400 to-red-500 p-8 text-center">
+        <!-- Kartu Utama Resep -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 mb-6">
+            <!-- Header Gradien Resep -->
+            <div
+                class="bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 p-8 text-center relative overflow-hidden">
                 <div
-                    class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-inner no-select">
-                    🍲</div>
-                <h1 class="text-2xl md:text-3xl font-bold text-white mb-2" id="judul-resep">Menyiapkan Resep...</h1>
-                <div class="flex justify-center gap-4 text-white/90 text-sm font-medium">
-                    <span><i class="fa-solid fa-fire-burner mr-1"></i> Mode Hemat</span>
+                    class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-inner no-select">
+                    🍲
+                </div>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-white mb-3 tracking-tight" id="judul-resep">
+                    Koki AI Sedang Meracik...
+                </h1>
+
+                <!-- Badge Info Filter Aktif -->
+                <div class="flex flex-wrap justify-center gap-2 text-white text-xs font-medium" id="info-filter-badges">
+                    <span class="px-3 py-1 rounded-full bg-black/20 backdrop-blur-sm">
+                        <i class="fa-solid fa-fire-burner mr-1"></i> Mode Hemat Anak Kos
+                    </span>
                 </div>
             </div>
 
-            <!-- KONTEN RESEP -->
-            <div class="p-6 md:p-8 text-slate-700 leading-relaxed space-y-4" id="resep-content">
+            <!-- Konten Resep Terstruktur -->
+            <div class="p-6 md:p-8 text-slate-700 leading-relaxed" id="resep-content">
                 <div id="isi-resep">
-                    <div class="animate-pulse flex space-x-4">
-                        <div class="flex-1 space-y-6 py-1">
-                            <div class="h-3 bg-slate-200 rounded skeleton-box"></div>
-                            <div class="space-y-3">
-                                <div class="grid grid-cols-3 gap-4">
-                                    <div class="h-3 bg-slate-200 rounded col-span-2 skeleton-box"></div>
-                                    <div class="h-3 bg-slate-200 rounded col-span-1 skeleton-box"></div>
-                                </div>
-                                <div class="h-3 bg-slate-200 rounded skeleton-box"></div>
-                                <div class="h-3 bg-slate-200 rounded w-5/6 skeleton-box"></div>
-                            </div>
+                    <!-- Skeleton Loading -->
+                    <div class="space-y-4 py-2">
+                        <div class="h-5 bg-slate-200 rounded w-1/3 skeleton-box"></div>
+                        <div class="h-20 bg-slate-100 rounded-2xl skeleton-box"></div>
+                        <div class="h-5 bg-slate-200 rounded w-1/2 skeleton-box"></div>
+                        <div class="space-y-2">
+                            <div class="h-3.5 bg-slate-200 rounded skeleton-box"></div>
+                            <div class="h-3.5 bg-slate-200 rounded w-5/6 skeleton-box"></div>
+                            <div class="h-3.5 bg-slate-200 rounded w-4/6 skeleton-box"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TOMBOL SHARE WHATSAPP -->
-        <button id="btn-share-wa"
-            class="w-full bg-[#25D366] text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-[#1ebd5a] transition-all flex justify-center items-center gap-2 mb-6 btn-shine">
-            <i class="fa-brands fa-whatsapp text-xl"></i> Pamerkan Resep ke WA
+        <!-- Tombol Share WhatsApp -->
+        <button id="btn-share-wa" type="button"
+            class="w-full bg-[#25D366] text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-[#1ebd5a] transition-all flex justify-center items-center gap-2.5 mb-6 btn-shine">
+            <i class="fa-brands fa-whatsapp text-xl"></i>
+            <span>Bagikan Resep Ini ke WhatsApp</span>
         </button>
 
-        <div class="text-center pb-8">
+        <div class="text-center">
             <a href="/dashboard.html"
-                class="text-slate-500 font-medium hover:text-orange-500 underline underline-offset-4">Masak menu yang
-                lain?</a>
+                class="text-slate-500 text-sm font-semibold hover:text-orange-600 transition-colors">
+                <i class="fa-solid fa-rotate-left mr-1"></i> Ingin meracik menu yang lain?
+            </a>
         </div>
     </div>
 
-    <!-- UPDATE VERSI SCRIPT -->
-    <script src="/js/resep.js?v=23"></script>
+    <script src="/js/resep.js?v=24"></script>
 </body>
 
 </html>
