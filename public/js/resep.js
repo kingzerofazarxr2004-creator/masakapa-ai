@@ -21,8 +21,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const judulBukuResep = sessionStorage.getItem('judulResepMasaLalu');
     const alatMasak = sessionStorage.getItem('alatMasak');
     const budgetMasak = sessionStorage.getItem('budgetMasak');
+    const pedasMasak = sessionStorage.getItem('pedasMasak');
 
-    // Tampilkan Badge Alat & Budget jika digunakan
+    // Tampilkan Badge Alat, Budget & Level Pedas jika digunakan
     if (badgeContainer) {
         if (alatMasak) {
             badgeContainer.innerHTML += `<span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm"><i class="fa-solid fa-plug-circle-bolt mr-1"></i> ${alatMasak}</span>`;
@@ -30,9 +31,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (budgetMasak) {
             badgeContainer.innerHTML += `<span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm"><i class="fa-solid fa-wallet mr-1"></i> Maks Rp${Number(budgetMasak).toLocaleString('id-ID')}</span>`;
         }
+        if (pedasMasak) {
+            badgeContainer.innerHTML += `<span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm"><i class="fa-solid fa-pepper-hot mr-1"></i> ${pedasMasak}</span>`;
+        }
     }
 
-    // Fungsi Toast Notification Modern (Pengganti alert kaku)
+    // Fungsi Toast Notification Modern
     function showToast(pesan, tipe = 'sukses') {
         const container = document.getElementById('toast-container');
         if (!container) return;
@@ -60,12 +64,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             let clean = baris.trim();
             if (!clean) return;
 
-            // Format bold & italic markdown
             clean = clean
                 .replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 font-bold">$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em class="text-orange-600 font-medium">$1</em>');
 
-            // Jika baris merupakan Heading bernomor utama (contoh: 1. Nama Masakan, 2. Estimasi Biaya)
             if (/^[1-5]\.\s/.test(clean) || /^#+\s/.test(clean)) {
                 const teksJudulBagian = clean.replace(/^#+\s/, '');
                 htmlTerstruktur += `
@@ -76,7 +78,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
                 `;
             } else if (/^[-•*]\s/.test(clean)) {
-                // Jika baris merupakan item daftar (bullet list)
                 const itemTeks = clean.replace(/^[-•*]\s/, '');
                 htmlTerstruktur += `
                     <div class="flex items-start gap-2.5 pl-2 text-sm sm:text-base text-slate-700">
@@ -117,7 +118,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else if (bahanBahan || menuPilihan) {
         judulResep.innerText = `Menyiapkan Resep...`;
 
-        const payloadData = { alat: alatMasak, budget: budgetMasak };
+        const payloadData = { alat: alatMasak, budget: budgetMasak, pedas: pedasMasak };
         if (menuPilihan) payloadData.menuPilihan = menuPilihan;
         else if (bahanBahan) payloadData.bahan = bahanBahan.split(', ');
 

@@ -20,13 +20,15 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Gaya Chip Bahan & Alat ketika dicentang */
-        input:checked+.chip-box {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-            color: #ffffff;
-            border-color: #ea580c;
+        /* Gaya Chip Alat & 300+ Bahan ketika dicentang */
+        input:checked+.chip-box,
+        input:checked+.chip-item {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+            color: #ffffff !important;
+            border-color: #ea580c !important;
             box-shadow: 0 6px 15px -3px rgba(249, 115, 22, 0.35);
             transform: translateY(-1px);
+            font-weight: 600;
         }
 
         input:checked+.chip-box .chip-icon-uncheck {
@@ -35,6 +37,15 @@
 
         input:checked+.chip-box .chip-icon-check {
             display: inline-flex !important;
+        }
+
+        /* Memunculkan ikon centang pada 300+ bahan saat dipilih */
+        input:checked+.chip-item .chip-check {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+            width: auto !important;
+            margin-right: 6px !important;
+            color: #ffffff !important;
         }
 
         input[type="file"]::file-selector-button {
@@ -307,14 +318,24 @@
                     <!-- Badge Penghitung Bahan Terpilih -->
                     <div class="flex items-center gap-2 self-start sm:self-auto">
                         <span id="counter-bahan"
-                            class="px-3.5 py-1.5 rounded-full bg-orange-100 text-orange-700 font-bold text-xs border border-orange-200">
+                            class="px-3.5 py-1.5 rounded-full bg-orange-100 text-orange-700 font-bold text-xs border border-orange-200 transition-all">
                             0 Bahan Dipilih
                         </span>
                         <button type="button" id="btn-reset-bahan"
-                            class="hidden px-3 py-1.5 rounded-full bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs font-semibold transition-colors">
-                            Reset
+                            class="hidden px-3 py-1.5 rounded-full bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold border border-red-200 transition-colors">
+                            <i class="fa-solid fa-trash-can mr-1"></i> Reset
                         </button>
                     </div>
+                </div>
+
+                <!-- LACI RINGKASAN BAHAN YANG DIPILIH (MUNCUL OTOMATIS SAAT ADA BAHAN DICENTANG) -->
+                <div id="selected-bahan-tray"
+                    class="hidden mb-4 p-3.5 bg-orange-50/80 border border-orange-200/90 rounded-2xl fade-in-up">
+                    <div class="text-[11px] font-bold text-orange-800 mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-basket-shopping text-orange-500"></i>
+                        <span>Bahan Terpilih (Klik bahan untuk membatalkan):</span>
+                    </div>
+                    <div id="selected-bahan-list" class="flex flex-wrap gap-1.5"></div>
                 </div>
 
                 <!-- LIVE SEARCH BAR BAHAN -->
@@ -330,17 +351,26 @@
                     </button>
                 </div>
 
+                <!-- Pesan Jika Pencarian Bahan Tidak Ditemukan -->
+                <div id="bahan-kosong-msg" class="hidden text-center py-8 text-slate-400 text-xs sm:text-sm">
+                    <i class="fa-solid fa-magnifying-glass-minus text-2xl mb-2 text-slate-300"></i>
+                    <p>Bahan yang kamu cari tidak ditemukan. Coba kata kunci lain ya!</p>
+                </div>
+
                 <form id="form-masak">
                     <div id="kategori-bahan-container"
-                        class="space-y-6 mb-6 max-h-[52vh] overflow-y-auto custom-scroll pr-2">
+                        class="space-y-6 mb-4 max-h-[50vh] overflow-y-auto custom-scroll pr-2 pb-2">
                         <!-- Dirender dinamis oleh kulkas.js -->
                     </div>
 
-                    <button type="submit" id="btn-submit-manual"
-                        class="w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2.5 btn-shine">
-                        <i class="fa-solid fa-wand-magic-sparkles text-orange-400"></i>
-                        <span>Racik Resep Sekarang!</span>
-                    </button>
+                    <!-- Tombol Sticky di Bawah Agar Mudah Dijangkau -->
+                    <div class="sticky bottom-2 z-20 pt-2 bg-gradient-to-t from-white via-white to-transparent">
+                        <button type="submit" id="btn-submit-manual"
+                            class="w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2.5 btn-shine">
+                            <i class="fa-solid fa-wand-magic-sparkles text-orange-400"></i>
+                            <span id="teks-btn-racik">Racik Resep Sekarang!</span>
+                        </button>
+                    </div>
                 </form>
             </div>
 
@@ -362,7 +392,7 @@
                         </span>
                     </div>
 
-                    <!-- Tombol Pilihan Kamera & Galeri (Ikon Sudah Diperbaiki & Dipercantik) -->
+                    <!-- Tombol Pilihan Kamera & Galeri -->
                     <div id="area-pilihan-scan" class="grid sm:grid-cols-2 gap-4 mb-6">
                         <button id="btn-buka-kamera" type="button"
                             class="bg-gradient-to-br from-orange-50/70 to-white border-2 border-orange-200 hover:border-orange-500 hover:shadow-md rounded-3xl p-6 flex flex-col items-center justify-center transition-all group text-center">
@@ -567,7 +597,7 @@
     </div>
 
     <!-- ==========================================
-         MODAL 3: PENGATURAN DAPUR & AKUN (PROFESSIONAL & FUNGSIONAL)
+         MODAL 3: PENGATURAN DAPUR & AKUN
          ========================================== -->
     <div id="pengaturan-modal"
         class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
@@ -684,7 +714,7 @@
         </div>
     </div>
 
-    <script src="/js/kulkas.js?v=24"></script>
+    <script src="/js/kulkas.js?v=25"></script>
 </body>
 
 </html>

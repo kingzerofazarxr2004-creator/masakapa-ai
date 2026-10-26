@@ -4,7 +4,6 @@ const daftarModel = [
     "gemini-3.8-flash",
     "gemini-3.5-flash-lite"
 ];
-
 const tungguSeketika = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const panggilGeminiDenganFallback = async (promptData) => {
@@ -40,17 +39,18 @@ const panggilGeminiDenganFallback = async (promptData) => {
 
 const generateResep = async (req, res) => {
     try {
-        // [UPDATE] Menerima tambahan alat dan budget dari Frontend
-        const { bahan, menuPilihan, alat, budget } = req.body;
+        // Menerima bahan/menu beserta filter alat, budget, dan preferensi pedas dari Frontend
+        const { bahan, menuPilihan, alat, budget, pedas } = req.body;
         let prompt = "";
 
-        // [UPDATE] Aturan khusus untuk Anak Kos
+        // Aturan khusus Contextual Prompt Engineering untuk Anak Kos
         const filterAlat = alat ? `\n- PERALATAN TERSEDIA: ${alat}. Tolong pastikan langkah memasak HANYA menggunakan alat-alat ini.` : '';
         const filterBudget = budget ? `\n- BUDGET BELANJA EKSTRA: Maksimal Rp${budget}. Jika butuh bahan tambahan di luar yang saya sebutkan, pastikan harganya sangat murah dan totalnya tidak melebihi budget.` : '';
+        const filterPedas = pedas ? `\n- PREFERENSI LEVEL PEDAS: ${pedas}. Sesuaikan takaran cabai, sambal, atau lada agar pas dengan level pedas ini.` : '';
 
         if (menuPilihan) {
             prompt = `Tolong berikan daftar bahan-bahan dan langkah-langkah cara membuat masakan: ${menuPilihan}. 
-            Sesuaikan porsi, alat, dan cara pembuatannya untuk gaya anak kost (praktis, murah, dan anti-ribet). ${filterAlat} ${filterBudget}
+            Sesuaikan porsi, alat, dan cara pembuatannya untuk gaya anak kost (praktis, murah, dan anti-ribet). ${filterAlat} ${filterBudget} ${filterPedas}
             Tuliskan dengan format:
             1. Nama Masakan
             2. Estimasi Biaya
@@ -60,7 +60,7 @@ const generateResep = async (req, res) => {
         } else if (bahan && bahan.length > 0) {
             prompt = `Saya adalah mahasiswa anak kos yang sedang berhemat di akhir bulan. 
             Di kulkas saya HANYA ada bahan berikut: ${bahan.join(', ')}. 
-            Tolong buatkan 1 resep masakan yang paling masuk akal, lezat, dan mengenyangkan. ${filterAlat} ${filterBudget}
+            Tolong buatkan 1 resep masakan yang paling masuk akal, lezat, dan mengenyangkan. ${filterAlat} ${filterBudget} ${filterPedas}
             Tuliskan dengan format:
             1. Nama Masakan (Beri nama yang kreatif)
             2. Estimasi Biaya (Sangat murah)

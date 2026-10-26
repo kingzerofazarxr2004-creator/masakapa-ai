@@ -26,40 +26,130 @@ document.addEventListener("DOMContentLoaded", () => {
         { icon: '🥘', nama: 'Seblak Kuah Pedas' }, { icon: '🥟', nama: 'Pangsit Chili Oil' }, { icon: '🍟', nama: 'Kentang Mustofa' }, { icon: '🍄', nama: 'Jamur Enoki Crispy' }
     ];
 
-    // Muat Default Budget dari Pengaturan Dapur jika ada
+    // Elemen Filter Kondisi Anak Kos & Pengaturan Default
     const inputBudget = document.getElementById('input-budget');
+    const selectPedas = document.getElementById('select-pedas');
+    const badgeFilterAktif = document.getElementById('badge-filter-aktif');
+    const settingDefaultAlat = document.getElementById('setting-default-alat');
     const settingDefaultBudget = document.getElementById('setting-default-budget');
+    const settingDefaultPedas = document.getElementById('setting-default-pedas');
+
+    // Muat Preferensi Default dari LocalStorage jika ada
     const savedDefaultBudget = localStorage.getItem('defaultBudgetKos');
+    const savedDefaultPedas = localStorage.getItem('defaultPedasKos');
+    const savedDefaultAlat = localStorage.getItem('defaultAlatKos');
+
     if (savedDefaultBudget) {
         if (inputBudget) inputBudget.value = savedDefaultBudget;
         if (settingDefaultBudget) settingDefaultBudget.value = savedDefaultBudget;
     }
-
-    // Fungsi Menyimpan Filter Alat & Budget ke SessionStorage (Sinkron untuk Semua Tab)
-    function simpanFilterKosKeSession() {
-        const alatTerpilih = Array.from(document.querySelectorAll('input[name="alat"]:checked')).map(cb => cb.value);
-        const budget = inputBudget?.value;
-        if (alatTerpilih.length > 0) sessionStorage.setItem('alatMasak', alatTerpilih.join(', '));
-        else sessionStorage.removeItem('alatMasak');
-        if (budget) sessionStorage.setItem('budgetMasak', budget);
-        else sessionStorage.removeItem('budgetMasak');
+    if (savedDefaultPedas) {
+        if (selectPedas) selectPedas.value = savedDefaultPedas;
+        if (settingDefaultPedas) settingDefaultPedas.value = savedDefaultPedas;
+    }
+    if (savedDefaultAlat) {
+        if (settingDefaultAlat) settingDefaultAlat.value = savedDefaultAlat;
+        const daftarAlatDefault = savedDefaultAlat.split(',').map(a => a.trim());
+        document.querySelectorAll('input[name="alat"]').forEach(cb => {
+            cb.checked = daftarAlatDefault.includes(cb.value);
+        });
     }
 
-    // Render 300+ Bahan dengan Desain Chip Modern Seragam
+    // Update Badge Indikator Filter Anak Kos
+    function updateIndikatorFilterKos() {
+        const alatTerpilih = Array.from(document.querySelectorAll('input[name="alat"]:checked')).map(cb => cb.value);
+        const budget = inputBudget?.value?.trim();
+        const pedas = selectPedas?.value;
+        const adaFilter = alatTerpilih.length > 0 || Boolean(budget) || Boolean(pedas);
+
+        if (badgeFilterAktif) {
+            badgeFilterAktif.classList.toggle('hidden', !adaFilter);
+            if (adaFilter) {
+                const totalFilter = (alatTerpilih.length > 0 ? 1 : 0) + (budget ? 1 : 0) + (pedas ? 1 : 0);
+                badgeFilterAktif.innerText = `${totalFilter} Filter Aktif`;
+            }
+        }
+    }
+
+    document.querySelectorAll('input[name="alat"]').forEach(cb => {
+        cb.addEventListener('change', updateIndikatorFilterKos);
+    });
+    inputBudget?.addEventListener('input', updateIndikatorFilterKos);
+    selectPedas?.addEventListener('change', updateIndikatorFilterKos);
+    updateIndikatorFilterKos();
+
+    // Fungsi Menyimpan Filter Alat, Budget & Level Pedas ke SessionStorage (Sinkron untuk Semua Tab)
+    function simpanFilterKosKeSession() {
+        const alatTerpilih = Array.from(document.querySelectorAll('input[name="alat"]:checked')).map(cb => cb.value);
+        const budget = inputBudget?.value?.trim();
+        const pedas = selectPedas?.value;
+
+        if (alatTerpilih.length > 0) sessionStorage.setItem('alatMasak', alatTerpilih.join(', '));
+        else sessionStorage.removeItem('alatMasak');
+
+        if (budget) sessionStorage.setItem('budgetMasak', budget);
+        else sessionStorage.removeItem('budgetMasak');
+
+        if (pedas) sessionStorage.setItem('pedasMasak', pedas);
+        else sessionStorage.removeItem('pedasMasak');
+    }
+
+    // =========================================================================
+    // RENDER 300+ BAHAN & SINKRONISASI COUNTER + LACI RINGKASAN BAHAN TERPILIH
+    // =========================================================================
     const wadahBahan = document.getElementById('kategori-bahan-container');
-    const badgeCounter = document.getElementById('badge-counter-bahan');
+    const badgeCounter = document.getElementById('counter-bahan') || document.getElementById('badge-counter-bahan');
     const btnResetBahan = document.getElementById('btn-reset-bahan');
+    const selectedTray = document.getElementById('selected-bahan-tray');
+    const selectedList = document.getElementById('selected-bahan-list');
+    const teksBtnRacik = document.getElementById('teks-btn-racik');
+    const btnSubmitManual = document.getElementById('btn-submit-manual');
 
     function updateCounterBahan() {
-        const jumlah = document.querySelectorAll('input[name="bahan"]:checked').length;
+        const checkboxesTerpilih = Array.from(document.querySelectorAll('input[name="bahan"]:checked'));
+        const jumlah = checkboxesTerpilih.length;
+
+        // 1. Update Lencana "X Bahan Dipilih"
         if (badgeCounter) {
             badgeCounter.innerText = `${jumlah} Bahan Dipilih`;
             badgeCounter.className = jumlah > 0
                 ? "px-3.5 py-1.5 rounded-full bg-orange-500 text-white font-bold text-xs shadow-sm transition-all"
                 : "px-3.5 py-1.5 rounded-full bg-orange-100 text-orange-700 font-bold text-xs border border-orange-200 transition-all";
         }
+
+        // 2. Munculkan / Sembunyikan Tombol Reset
         if (btnResetBahan) {
             btnResetBahan.classList.toggle('hidden', jumlah === 0);
+        }
+
+        // 3. Update Teks & Warna Tombol "Racik Resep Sekarang!"
+        if (teksBtnRacik) {
+            teksBtnRacik.innerText = jumlah > 0
+                ? `Racik Resep Sekarang! (${jumlah} Bahan)`
+                : `Racik Resep Sekarang!`;
+        }
+        if (btnSubmitManual) {
+            btnSubmitManual.className = jumlah > 0
+                ? "w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-orange-500/25 transition-all flex justify-center items-center gap-2.5 btn-shine"
+                : "w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2.5 btn-shine";
+        }
+
+        // 4. Render Laci Ringkasan Bahan Terpilih
+        if (selectedTray && selectedList) {
+            selectedTray.classList.toggle('hidden', jumlah === 0);
+            selectedList.innerHTML = '';
+
+            checkboxesTerpilih.forEach(cb => {
+                const chip = document.createElement('button');
+                chip.type = 'button';
+                chip.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-orange-300 text-orange-700 hover:bg-red-50 hover:text-red-600 hover:border-red-300 text-xs font-semibold shadow-sm transition-all";
+                chip.innerHTML = `<span>${cb.value}</span><i class="fa-solid fa-xmark text-[10px]"></i>`;
+                chip.addEventListener('click', () => {
+                    cb.checked = false;
+                    updateCounterBahan();
+                });
+                selectedList.appendChild(chip);
+            });
         }
     }
 
@@ -174,21 +264,36 @@ document.addEventListener("DOMContentLoaded", () => {
     // Cek Status Autentikasi Pengguna
     const token = sessionStorage.getItem('firebaseToken');
     const userAvatar = document.getElementById('user-avatar');
-    const userNama = document.getElementById('user-nama');
+    const userNama = document.getElementById('dropdown-user-name') || document.getElementById('user-nama');
+    const userEmail = document.getElementById('dropdown-user-email');
+    const settingsAvatar = document.getElementById('settings-user-avatar');
+    const settingsNama = document.getElementById('settings-user-name');
+    const settingsEmail = document.getElementById('settings-user-email');
+
     if (token && userAvatar) {
         fetch('/api/auth/status', { method: 'GET', headers: { 'Authorization': `Bearer ${token}` } })
             .then(res => { if (!res.ok) throw new Error("Token Basi"); return res.json(); })
             .then(data => {
                 if (data.user) {
-                    if (data.user.foto) userAvatar.src = data.user.foto;
-                    if (data.user.nama && userNama) userNama.innerText = data.user.nama;
+                    if (data.user.foto) {
+                        userAvatar.src = data.user.foto;
+                        if (settingsAvatar) settingsAvatar.src = data.user.foto;
+                    }
+                    if (data.user.nama) {
+                        if (userNama) userNama.innerText = data.user.nama;
+                        if (settingsNama) settingsNama.innerText = data.user.nama;
+                    }
+                    if (data.user.email) {
+                        if (userEmail) userEmail.innerText = data.user.email;
+                        if (settingsEmail) settingsEmail.innerText = data.user.email;
+                    }
                 }
             })
             .catch(() => { sessionStorage.removeItem('firebaseToken'); });
     }
 
     // Dropdown Profil
-    const triggerProfil = document.getElementById('trigger-profil') || userAvatar;
+    const triggerProfil = document.getElementById('avatar-trigger') || document.getElementById('trigger-profil') || userAvatar;
     const dropdownProfil = document.getElementById('dropdown-profil');
     if (triggerProfil && dropdownProfil) {
         triggerProfil.addEventListener('click', (e) => {
@@ -327,15 +432,40 @@ document.addEventListener("DOMContentLoaded", () => {
         bukaModal(errorModal);
     }
 
-    // Simpan Pengaturan Dapur
+    // Simpan Pengaturan Dapur (Alat, Budget, Level Pedas Default)
     document.getElementById('btn-simpan-pengaturan')?.addEventListener('click', () => {
-        const nilaiBudget = settingDefaultBudget?.value || '';
+        const nilaiBudget = settingDefaultBudget?.value?.trim() || '';
+        const nilaiPedas = settingDefaultPedas?.value || '';
+        const nilaiAlat = settingDefaultAlat?.value || '';
+
         if (nilaiBudget) {
             localStorage.setItem('defaultBudgetKos', nilaiBudget);
             if (inputBudget) inputBudget.value = nilaiBudget;
         } else {
             localStorage.removeItem('defaultBudgetKos');
+            if (inputBudget) inputBudget.value = '';
         }
+
+        if (nilaiPedas) {
+            localStorage.setItem('defaultPedasKos', nilaiPedas);
+            if (selectPedas) selectPedas.value = nilaiPedas;
+        } else {
+            localStorage.removeItem('defaultPedasKos');
+            if (selectPedas) selectPedas.value = '';
+        }
+
+        if (nilaiAlat) {
+            localStorage.setItem('defaultAlatKos', nilaiAlat);
+            const daftarAlat = nilaiAlat.split(',').map(a => a.trim());
+            document.querySelectorAll('input[name="alat"]').forEach(cb => {
+                cb.checked = daftarAlat.includes(cb.value);
+            });
+        } else {
+            localStorage.removeItem('defaultAlatKos');
+            document.querySelectorAll('input[name="alat"]').forEach(cb => { cb.checked = false; });
+        }
+
+        updateIndikatorFilterKos();
         tutupModal(pengaturanModal);
     });
 
