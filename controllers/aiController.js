@@ -1,16 +1,19 @@
 const genAI = require('../config/gemini-config');
 
+// Menggunakan daftar model resmi Google Gemini API yang aktif
 const daftarModel = [
-    "gemini-3.8-flash",
-    "gemini-3.5-flash-lite"
+    "gemini-2.5-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-2.0-flash",
 ];
+
 const tungguSeketika = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const panggilGeminiDenganFallback = async (promptData) => {
     let errorTerakhir;
     for (let i = 0; i < daftarModel.length; i++) {
         const namaModel = daftarModel[i];
-        const batasCoba = 3;
+        const batasCoba = 2;
 
         for (let j = 1; j <= batasCoba; j++) {
             try {
@@ -21,11 +24,16 @@ const panggilGeminiDenganFallback = async (promptData) => {
                 return result.response.text();
             } catch (error) {
                 errorTerakhir = error;
-                const pesanError = error.message;
+                const pesanError = error.message || String(error);
 
-                if (pesanError.includes("503") && j < batasCoba) {
-                    const jeda = j * 3000;
-                    console.warn(`[AI] ⚠️ Server penuh. Santai dulu ${jeda / 1000} detik sebelum ketuk ulang...`);
+                // Jika API Key tidak valid atau diblokir Google, langsung hentikan dan beri tahu user
+                if (pesanError.includes("API_KEY_INVALID") || pesanError.includes("API key not valid") || pesanError.includes("leaked") || pesanError.includes("403")) {
+                    throw new Error("GEMINI_API_KEY tidak valid atau telah dinonaktifkan oleh Google. Silakan buat API Key baru di Google AI Studio lalu pasang di Railway / .env.");
+                }
+
+                if ((pesanError.includes("503") || pesanError.includes("429")) && j < batasCoba) {
+                    const jeda = j * 2500;
+                    console.warn(`[AI] ⚠️ Server sibuk. Menunggu ${jeda / 1000} detik sebelum mencoba ulang...`);
                     await tungguSeketika(jeda);
                     continue;
                 }
@@ -34,16 +42,14 @@ const panggilGeminiDenganFallback = async (promptData) => {
             }
         }
     }
-    throw new Error("Lalu lintas server AI Google sedang sangat padat. Coba lagi dalam beberapa menit ya!");
+    throw new Error(errorTerakhir?.message || "Lalu lintas server AI Google sedang sangat padat. Coba lagi dalam beberapa saat ya!");
 };
 
 const generateResep = async (req, res) => {
     try {
-        // Menerima bahan/menu beserta filter alat, budget, dan preferensi pedas dari Frontend
         const { bahan, menuPilihan, alat, budget, pedas } = req.body;
         let prompt = "";
 
-        // Aturan khusus Contextual Prompt Engineering untuk Anak Kos
         const filterAlat = alat ? `\n- PERALATAN TERSEDIA: ${alat}. Tolong pastikan langkah memasak HANYA menggunakan alat-alat ini.` : '';
         const filterBudget = budget ? `\n- BUDGET BELANJA EKSTRA: Maksimal Rp${budget}. Jika butuh bahan tambahan di luar yang saya sebutkan, pastikan harganya sangat murah dan totalnya tidak melebihi budget.` : '';
         const filterPedas = pedas ? `\n- PREFERENSI LEVEL PEDAS: ${pedas}. Sesuaikan takaran cabai, sambal, atau lada agar pas dengan level pedas ini.` : '';
