@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { nama: 'Ikan Teri Kacang Balado', gambar: '/assets/menu/ikan-teri-kacang-balado.jpg' },
         { nama: 'Lele Goreng Crispy', gambar: '/assets/menu/lele-goreng-crispy.jpg' },
         { nama: 'Tahu Cabai Garam', gambar: '/assets/menu/tahu-cabe-garam.jpg' },
-        { nama: 'Tempe Orek Kering', gambar: '/assets/menu/tempe-orek-kering.jpg' },
+        { nama: 'Tempe Orek Kering', gambar: '/assets/menu/tempe-orek-kering.jpeg' },
         { nama: 'Tempe Mendoan', gambar: '/assets/menu/tempe-mendoan.jpg' },
         { nama: 'Tahu Crispy Asam Manis', gambar: '/assets/menu/tahu-crispy-asam-manis.jpg' },
         { nama: 'Nugget Tahu Sayur', gambar: '/assets/menu/nugget-tahu-sayur.jpg' },
