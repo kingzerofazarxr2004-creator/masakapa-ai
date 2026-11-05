@@ -16,14 +16,58 @@ document.addEventListener("DOMContentLoaded", () => {
         { kategori: "🌶️ Bumbu, Saus & Ekstra (100)", icon: "fa-pepper-hot", item: ["Bawang Merah", "Bawang Putih", "Bawang Bombay", "Bawang Putih Bubuk", "Cabai Merah Besar", "Cabai Merah Keriting", "Cabai Rawit Merah", "Cabai Rawit Hijau", "Cabai Hijau Besar", "Cabai Kering", "Cabai Bubuk (Boncabe)", "Jahe", "Jahe Bubuk", "Lengkuas", "Kunyit", "Kunyit Bubuk", "Kencur", "Serai", "Daun Salam", "Daun Jeruk", "Ketumbar", "Ketumbar Bubuk", "Merica Putih", "Lada Hitam", "Kemiri", "Pala", "Asam Jawa", "Asam Kandis", "Kayu Manis", "Cengkeh", "Kapulaga", "Bunga Lawang", "Jinten", "Wijen", "Wijen Sangrai", "Garam", "Garam Himalaya", "Gula Pasir", "Gula Merah", "Gula Batu", "Gula Aren", "Kaldu Ayam", "Kaldu Sapi", "Kaldu Jamur", "Micin / MSG", "Terasi Bakar", "Kecap Manis", "Kecap Manis Pedas", "Kecap Asin", "Kecap Ikan", "Kecap Inggris", "Kecap Jamur", "Saus Tiram", "Saus Sambal", "Saus Ekstra Pedas", "Saus Tomat", "Saus Teriyaki", "Saus Bulgogi", "Saus Barbeque (BBQ)", "Saus Lada Hitam", "Saus Gochujang", "Saus Keju", "Saus Telur Asin (Salted Egg)", "Minyak Goreng", "Minyak Kelapa", "Minyak Wijen", "Minyak Zaitun (Olive Oil)", "Minyak Truffle", "Chili Oil", "Bumbu Nasi Goreng Instan", "Bumbu Rendang Instan", "Bumbu Soto Instan", "Bumbu Kari Instan", "Bumbu Tomyum", "Pasta Tomat", "Selai Kacang", "Selai Coklat", "Selai Strawberry", "Madu", "Sirup Maple", "Cuka Dapur", "Cuka Apel", "Baking Powder", "Baking Soda", "Ragi Instan (Fermipan)", "Ekstrak Vanili", "Pewarna Makanan", "Coklat Bubuk (Cocoa)", "Matcha Powder", "Kopi Bubuk", "Teh Celup", "Es Batu", "Nori (Rumput Laut)", "Bawang Goreng", "Abon Sapi", "Abon Ayam", "Kismis", "Chia Seeds", "Flaxseed"] }
     ];
 
+    // Pembaruan Data Menu Kost Menggunakan Gambar Lokal dari Folder public/assets/menu/
     const menuItems = [
-        { icon: '🍚', nama: 'Nasi Goreng Kampung' }, { icon: '🍚', nama: 'Nasi Gila Kosan' }, { icon: '🍚', nama: 'Nasi Sarden Mayo' }, { icon: '🍚', nama: 'Nasi Telur Pontianak' }, { icon: '🍚', nama: 'Nasi Goreng Gila' }, { icon: '🍚', nama: 'Nasi Goreng Mawut' }, { icon: '🍚', nama: 'Nasi Mentega Sosis' }, { icon: '🍚', nama: 'Nasi Kulit Ayam Krispi' },
-        { icon: '🍜', nama: 'Mie Goreng Dok-Dok' }, { icon: '🍜', nama: 'Mie Nyemek Pedas' }, { icon: '🍜', nama: 'Mie Tek-Tek Kuah' }, { icon: '🍝', nama: 'Spaghetti Brulee' }, { icon: '🧀', nama: 'Mac & Cheese Rice Cooker' }, { icon: '🍜', nama: 'Bihun Goreng Spesial' }, { icon: '🍜', nama: 'Soun Goreng Cabe Ijo' }, { icon: '🍜', nama: 'Kwetiau Goreng' },
-        { icon: '🍳', nama: 'Omelet Mie Instan' }, { icon: '🍘', nama: 'Telur Barendo (Padang)' }, { icon: '🍳', nama: 'Telur Ceplok Kecap' }, { icon: '🥚', nama: 'Telur Dadar Gulung' }, { icon: '🥚', nama: 'Telur Pindang' }, { icon: '🥚', nama: 'Telur Balado' }, { icon: '🥚', nama: 'Fuyunghai Sederhana' },
-        { icon: '🍗', nama: 'Ayam Suwir Kemangi' }, { icon: '🍗', nama: 'Ayam Geprek Sambal Korek' }, { icon: '🍗', nama: 'Ayam Kecap Mentega' }, { icon: '🍗', nama: 'Ayam Goreng Lengkuas' }, { icon: '🥩', nama: 'Beef Teriyaki ala Kos' }, { icon: '🥩', nama: 'Tumis Kornet Bawang' }, { icon: '🥫', nama: 'Sarden Pedas Manis' }, { icon: '🐟', nama: 'Ikan Teri Kacang Balado' }, { icon: '🐟', nama: 'Lele Goreng Crispy' },
-        { icon: '🌶️', nama: 'Tahu Cabai Garam' }, { icon: '🧊', nama: 'Tempe Orek Kering' }, { icon: '🧊', nama: 'Tempe Mendoan' }, { icon: '🧊', nama: 'Tahu Crispy Asam Manis' }, { icon: '🧊', nama: 'Nugget Tahu Sayur' }, { icon: '🧊', nama: 'Perkedel Tahu' }, { icon: '🧊', nama: 'Oseng Tahu Tempe Kecap' },
-        { icon: '🥬', nama: 'Tumis Kangkung Terasi' }, { icon: '🥬', nama: 'Tumis Buncis Ebi' }, { icon: '🥣', nama: 'Sop Sosis Bening' }, { icon: '🥣', nama: 'Sayur Bayam Jagung' }, { icon: '🥣', nama: 'Sayur Sop Ayam Sayur' }, { icon: '🥬', nama: 'Capcay Sederhana' }, { icon: '🥬', nama: 'Tumis Sawi Putih Telur' },
-        { icon: '🥘', nama: 'Seblak Kuah Pedas' }, { icon: '🥟', nama: 'Pangsit Chili Oil' }, { icon: '🍟', nama: 'Kentang Mustofa' }, { icon: '🍄', nama: 'Jamur Enoki Crispy' }
+        { nama: 'Nasi Goreng Kampung', gambar: '/assets/menu/nasi-goreng-kampung.jpg' },
+        { nama: 'Nasi Gila Kosan', gambar: '/assets/menu/nasi-gilak-kos.jpg' },
+        { nama: 'Nasi Sarden Mayo', gambar: '/assets/menu/nasi-sarden-mayo.jpg' },
+        { nama: 'Nasi Telur Pontianak', gambar: '/assets/menu/nasi-telur-pontianak.jpg' },
+        { nama: 'Nasi Goreng Gila', gambar: '/assets/menu/nasi-goreng-gila.jpg' },
+        { nama: 'Nasi Goreng Mawut', gambar: '/assets/menu/nasi-goreng-mawut.jpg' },
+        { nama: 'Nasi Mentega Sosis', gambar: '/assets/menu/nasi-mentega-sosis.jpg' },
+        { nama: 'Nasi Kulit Ayam Krispi', gambar: '/assets/menu/nasi-kulit-ayam-krispi.jpg' },
+        { nama: 'Mie Goreng Dok-Dok', gambar: '/assets/menu/mie-goreng-dok-dok.jpg' },
+        { nama: 'Mie Nyemek Pedas', gambar: '/assets/menu/mie-nyemek-pedas.jpg' },
+        { nama: 'Mie Tek-Tek Kuah', gambar: '/assets/menu/mie-tek-tek-kuah.jpg' },
+        { nama: 'Spaghetti Brulee', gambar: '/assets/menu/resep-spaghetti-brulee.jpg' },
+        { nama: 'Mac & Cheese Rice Cooker', gambar: '/assets/menu/mac-cheese-rice-cooker.jpg' },
+        { nama: 'Bihun Goreng Spesial', gambar: '/assets/menu/bihun-goreng-spesial.jpg' },
+        { nama: 'Soun Goreng Cabe Ijo', gambar: '/assets/menu/soun-goreng-cabe-ijo.jpg' },
+        { nama: 'Kwetiau Goreng', gambar: '/assets/menu/kwetiau-goreng.jpg' },
+        { nama: 'Omelet Mie Instan', gambar: '/assets/menu/omelet-mie-instan.jpg' },
+        { nama: 'Telur Barendo (Padang)', gambar: '/assets/menu/telur-barendo(padang).jpg' },
+        { nama: 'Telur Ceplok Kecap', gambar: '/assets/menu/telur-ceplok-kecap.jpg' },
+        { nama: 'Telur Dadar Gulung', gambar: '/assets/menu/telur-dadar-gulung.jpg' },
+        { nama: 'Telur Pindang', gambar: '/assets/menu/telur-pindang.jpg' },
+        { nama: 'Telur Balado', gambar: '/assets/menu/telur-balado.jpg' },
+        { nama: 'Fuyunghai Sederhana', gambar: '/assets/menu/fuyunghai-sederhana.jpg' },
+        { nama: 'Ayam Suwir Kemangi', gambar: '/assets/menu/ayam-suwir-kemangi.jpg' },
+        { nama: 'Ayam Geprek Sambal Korek', gambar: '/assets/menu/ayam-geprek-sambal-korek.jpg' },
+        { nama: 'Ayam Kecap Mentega', gambar: '/assets/menu/ayam-kecap-mentega.jpg' },
+        { nama: 'Ayam Goreng Lengkuas', gambar: '/assets/menu/ayam-goreng-lengkuas.jpg' },
+        { nama: 'Beef Teriyaki ala Kos', gambar: '/assets/menu/beef-teriyaki-ala-kos.jpg' },
+        { nama: 'Tumis Kornet Bawang', gambar: '/assets/menu/tumis-kornet-bawang.jpg' },
+        { nama: 'Sarden Pedas Manis', gambar: '/assets/menu/sarden-pedas-manis.jpg' },
+        { nama: 'Ikan Teri Kacang Balado', gambar: '/assets/menu/ikan-teri-kacang-balado.jpg' },
+        { nama: 'Lele Goreng Crispy', gambar: '/assets/menu/lele-goreng-crispy.jpg' },
+        { nama: 'Tahu Cabai Garam', gambar: '/assets/menu/tahu-cabe-garam.jpg' },
+        { nama: 'Tempe Orek Kering', gambar: '/assets/menu/tempe-orek-kering.jpg' },
+        { nama: 'Tempe Mendoan', gambar: '/assets/menu/tempe-mendoan.jpg' },
+        { nama: 'Tahu Crispy Asam Manis', gambar: '/assets/menu/tahu-crispy-asam-manis.jpg' },
+        { nama: 'Nugget Tahu Sayur', gambar: '/assets/menu/nugget-tahu-sayur.jpg' },
+        { nama: 'Perkedel Tahu', gambar: '/assets/menu/perkedel-tahu.jpg' },
+        { nama: 'Oseng Tahu Tempe Kecap', gambar: '/assets/menu/oseng-tahu-tempe-kecap.jpg' },
+        { nama: 'Tumis Kangkung Terasi', gambar: '/assets/menu/tumis-kangkung-terasi.jpg' },
+        { nama: 'Tumis Buncis Ebi', gambar: '/assets/menu/tumis-buncis-ebi.jpg' },
+        { nama: 'Sop Sosis Bening', gambar: '/assets/menu/sop-sosis-bening.jpg' },
+        { nama: 'Sayur Bayam Jagung', gambar: '/assets/menu/sayur-bayam-jagung.jpg' },
+        { nama: 'Sayur Sop Ayam Sayur', gambar: '/assets/menu/sayur-sop-ayam-sayur.jpg' },
+        { nama: 'Capcay Sederhana', gambar: '/assets/menu/capcay-sederhana.jpg' },
+        { nama: 'Tumis Sawi Putih Telur', gambar: '/assets/menu/tumis-sawi-putih-telur.jpg' },
+        { nama: 'Seblak Kuah Pedas', gambar: '/assets/menu/seblak-kuah-pedas.jpg' },
+        { nama: 'Pangsit Chili Oil', gambar: '/assets/menu/pangsit-chili-oil.jpg' },
+        { nama: 'Kentang Mustofa', gambar: '/assets/menu/kentang-mustofa.jpg' },
+        { nama: 'Jamur Enoki Crispy', gambar: '/assets/menu/jamur-enoki-crispy.jpg' }
     ];
 
     // Elemen Filter Kondisi Anak Kos & Pengaturan Default
@@ -113,8 +157,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (badgeCounter) {
             badgeCounter.innerText = `${jumlah} Bahan Dipilih`;
             badgeCounter.className = jumlah > 0
-                ? "px-3.5 py-1.5 rounded-full bg-orange-500 text-white font-bold text-xs shadow-sm transition-all"
-                : "px-3.5 py-1.5 rounded-full bg-orange-100 text-orange-700 font-bold text-xs border border-orange-200 transition-all";
+                ? "px-3.5 py-1.5 rounded-full bg-[#B94B27] text-white font-bold text-xs shadow-sm transition-all"
+                : "px-3.5 py-1.5 rounded-full bg-orange-50 text-[#B94B27] font-bold text-xs border border-orange-200 transition-all";
         }
 
         // 2. Munculkan / Sembunyikan Tombol Reset
@@ -130,8 +174,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         if (btnSubmitManual) {
             btnSubmitManual.className = jumlah > 0
-                ? "w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-orange-500/25 transition-all flex justify-center items-center gap-2.5 btn-shine"
-                : "w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2.5 btn-shine";
+                ? "w-full bg-gradient-to-r from-[#B94B27] to-[#A33D1C] hover:from-[#A33D1C] hover:to-[#8B3114] text-white font-bold py-4 rounded-2xl shadow-lg shadow-[#B94B27]/25 transition-all flex justify-center items-center gap-2.5 btn-shine"
+                : "w-full bg-slate-900 hover:bg-[#B94B27] text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2.5 btn-shine";
         }
 
         // 4. Render Laci Ringkasan Bahan Terpilih
@@ -159,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
             divKategori.className = "kategori-grup";
             divKategori.innerHTML = `
                 <h3 class="text-xs sm:text-sm font-bold text-slate-800 mb-3 pb-2 border-b border-slate-100 flex items-center gap-2">
-                    <i class="fa-solid ${grup.icon} text-orange-500"></i>
+                    <i class="fa-solid ${grup.icon} text-[#B94B27]"></i>
                     <span>${grup.kategori}</span>
                 </h3>
             `;
@@ -172,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 label.setAttribute('data-nama', namaBahan.toLowerCase());
                 label.innerHTML = `
                     <input type="checkbox" name="bahan" value="${namaBahan}" class="hidden">
-                    <div class="chip-item px-3 py-2.5 bg-slate-50/80 hover:bg-orange-50/60 border border-slate-200/90 hover:border-orange-300 text-slate-700 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center justify-center text-center h-full leading-snug">
+                    <div class="chip-item px-3 py-2.5 bg-slate-50/80 hover:bg-orange-50/60 border border-slate-200/90 hover:border-[#B94B27] text-slate-700 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center justify-center text-center h-full leading-snug">
                         <i class="fa-solid fa-check chip-check opacity-0 scale-0 w-0 transition-all text-[11px]"></i>
                         <span class="truncate">${namaBahan}</span>
                     </div>
@@ -227,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Render 50+ Menu Kost & Live Search Menu Kost
+    // Render 50+ Menu Kost & Live Search Menu Kost (DIPERBARUI DENGAN GAMBAR LOKAL)
     const daftarMenuKost = document.getElementById('daftar-menu-kost');
     const searchMenuKost = document.getElementById('search-menu-kost');
 
@@ -239,11 +283,30 @@ document.addEventListener("DOMContentLoaded", () => {
         hasilFilter.forEach(menu => {
             const btnMenu = document.createElement('button');
             btnMenu.type = "button";
-            btnMenu.className = "border border-slate-200/90 rounded-2xl p-4 text-left hover:border-orange-400 hover:bg-orange-50/50 hover:shadow-md transition-all active:scale-95 bg-white flex flex-col justify-between group";
+
+            // Kelas CSS untuk kartu bergaya profesional dengan gambar responsif
+            btnMenu.className = "border border-slate-200/90 rounded-[1.5rem] overflow-hidden text-left hover:border-[#B94B27] hover:shadow-lg transition-all duration-300 active:scale-95 bg-white flex flex-col group relative h-40";
+
+            // Fallback jika lupa memasukkan path gambar di array
+            const urlGambar = menu.gambar ? menu.gambar : '/assets/icons/logo.png';
+
             btnMenu.innerHTML = `
-                <div class="w-10 h-10 rounded-xl bg-orange-50 group-hover:bg-white flex items-center justify-center text-2xl mb-3 no-select shadow-sm">${menu.icon}</div>
-                <div class="font-bold text-slate-800 group-hover:text-orange-600 text-xs sm:text-sm leading-snug transition-colors">${menu.nama}</div>
+                <!-- Area Gambar Latar -->
+                <div class="absolute inset-0 w-full h-full bg-slate-100">
+                    <img src="${urlGambar}" alt="${menu.nama}" 
+                         onerror="this.src='/assets/icons/logo.png'" 
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
+                </div>
+                
+                <!-- Overlay Gradien agar teks terbaca jelas -->
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
+                
+                <!-- Teks Judul Menu di Bawah -->
+                <div class="absolute bottom-0 left-0 w-full p-4">
+                    <h3 class="font-bold text-white text-sm sm:text-base leading-snug drop-shadow-md font-serif">${menu.nama}</h3>
+                </div>
             `;
+
             btnMenu.addEventListener('click', () => {
                 simpanFilterKosKeSession();
                 sessionStorage.setItem('menuPilihan', menu.nama);
@@ -333,7 +396,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnBukaFavorit) {
         btnBukaFavorit.addEventListener('click', async () => {
             bukaModal(modalFavorit);
-            wadahFavorit.innerHTML = `<div class="text-center py-8 text-slate-500 text-sm"><i class="fa-solid fa-circle-notch fa-spin text-orange-500 text-2xl mb-3"></i><br>Memuat koleksi buku resepmu...</div>`;
+            wadahFavorit.innerHTML = `<div class="text-center py-8 text-slate-500 text-sm"><i class="fa-solid fa-circle-notch fa-spin text-[#B94B27] text-2xl mb-3"></i><br>Memuat koleksi buku resepmu...</div>`;
 
             try {
                 const { getApps, initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
@@ -372,10 +435,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     btn.className = "w-full text-left bg-slate-50 hover:bg-orange-50 border border-slate-200/80 hover:border-orange-200 p-4 rounded-2xl transition-all flex items-center justify-between group focus:outline-none mb-2.5";
                     btn.innerHTML = `
                         <div>
-                            <h4 class="font-bold text-slate-800 group-hover:text-orange-700 text-sm mb-1">${data.judul}</h4>
+                            <h4 class="font-bold text-slate-800 group-hover:text-[#B94B27] text-sm mb-1">${data.judul}</h4>
                             <p class="text-[11px] text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>Disimpan: ${new Date(data.createdAt).toLocaleDateString('id-ID')}</p>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-orange-500 transition-colors"></i>
+                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-[#B94B27] transition-colors"></i>
                     `;
                     btn.addEventListener('click', () => {
                         sessionStorage.setItem('resepTerbaru', data.teks_resep);
@@ -482,13 +545,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function switchTab(activeTab, activeSec) {
         [tabManual, tabScan, tabMenu].forEach(t => {
-            t.className = "py-3 px-2 text-center rounded-xl text-slate-500 font-medium text-xs sm:text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2";
+            t.className = "flex-1 py-2.5 text-center rounded-xl text-slate-500 font-medium text-sm hover:bg-white/50 transition-all flex items-center justify-center gap-2";
         });
         [secManual, secScan, secMenu].forEach(s => {
             s.classList.add('hidden');
             s.classList.remove('block', 'fade-in-up');
         });
-        activeTab.className = "py-3 px-2 text-center rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold text-xs sm:text-sm shadow-sm transition-all flex items-center justify-center gap-2";
+        activeTab.className = "flex-1 py-2.5 text-center rounded-xl bg-white text-slate-900 font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 border border-slate-200/50";
         activeSec.classList.remove('hidden');
         activeSec.classList.add('block');
         void activeSec.offsetWidth;
@@ -643,10 +706,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 data.daftarMenu.forEach(namaMenu => {
                     const btnResep = document.createElement('button');
                     btnResep.type = "button";
-                    btnResep.className = "flex items-center justify-between w-full bg-white border border-slate-200 hover:border-orange-400 hover:bg-orange-50/40 p-4 rounded-2xl text-left transition-all group shadow-sm";
+                    btnResep.className = "flex items-center justify-between w-full bg-white border border-slate-200 hover:border-[#B94B27] hover:bg-orange-50/40 p-4 rounded-2xl text-left transition-all group shadow-sm";
                     btnResep.innerHTML = `
-                        <span class="font-bold text-sm text-slate-800 group-hover:text-orange-600">${namaMenu}</span>
-                        <i class="fa-solid fa-arrow-right text-xs text-slate-400 group-hover:text-orange-500"></i>
+                        <span class="font-bold text-sm text-slate-800 group-hover:text-[#B94B27]">${namaMenu}</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-slate-400 group-hover:text-[#B94B27]"></i>
                     `;
                     btnResep.addEventListener('click', () => {
                         simpanFilterKosKeSession();
