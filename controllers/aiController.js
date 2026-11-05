@@ -2,9 +2,10 @@ const genAI = require('../config/gemini-config');
 
 // Di dalam file controllers/aiController.js
 const daftarModel = [
-    "gemini-3.8-flash", // Update ke model terbaru yang direkomendasikan
+    "gemini-3.5-flash", // Update ke model terbaru yang direkomendasikan
     "gemini-1.5-flash", // Fallback ke model stabil yang masih aktif
-    "gemini-1.5-pro",
+    "gemini-3.1-pro",
+    "gemini-1.0-pro",
 ];
 
 const tungguSeketika = (ms) => new Promise(resolve => setTimeout(resolve, ms));
