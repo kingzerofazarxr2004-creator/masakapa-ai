@@ -1,10 +1,10 @@
 const genAI = require('../config/gemini-config');
 
-// Menggunakan daftar model resmi Google Gemini API yang aktif
+// Di dalam file controllers/aiController.js
 const daftarModel = [
-    "gemini-2.5-flash",
-    "gemini-3.5-flash-lite",
-    "gemini-2.0-flash",
+    "gemini-3.8-flash", // Update ke model terbaru yang direkomendasikan
+    "gemini-1.5-flash", // Fallback ke model stabil yang masih aktif
+    "gemini-1.5-pro",
 ];
 
 const tungguSeketika = (ms) => new Promise(resolve => setTimeout(resolve, ms));
