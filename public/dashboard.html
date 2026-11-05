@@ -9,7 +9,8 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="/css/style.css">
@@ -17,16 +18,22 @@
 
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FAFAFA;
+        }
+
+        .font-serif {
+            font-family: 'Lora', serif;
         }
 
         /* Gaya Chip Alat & 300+ Bahan ketika dicentang */
         input:checked+.chip-box,
         input:checked+.chip-item {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+            background: #B94B27 !important;
+            /* Warna Terakota */
             color: #ffffff !important;
-            border-color: #ea580c !important;
-            box-shadow: 0 6px 15px -3px rgba(249, 115, 22, 0.35);
+            border-color: #9d3f20 !important;
+            box-shadow: 0 6px 15px -3px rgba(185, 75, 39, 0.3);
             transform: translateY(-1px);
             font-weight: 600;
         }
@@ -92,28 +99,27 @@
     </style>
 </head>
 
-<body class="bg-slate-50 min-h-screen pb-24 relative">
+<body class="min-h-screen pb-24 relative">
 
     <!-- Dekorasi Latar Belakang Halus -->
-    <div class="fixed top-0 left-1/4 w-96 h-96 bg-orange-200/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-[#B94B27]/10 rounded-full blur-3xl pointer-events-none z-0"></div>
+    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-[#F6A734]/15 rounded-full blur-3xl pointer-events-none z-0"></div>
 
     <!-- NAVBAR ATAS -->
-    <nav class="bg-white/90 shadow-sm sticky top-0 z-40 glass-effect border-b border-slate-100">
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-slate-200/50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center max-w-4xl">
-            <a href="/dashboard.html" class="flex items-center gap-2.5 font-extrabold text-xl text-slate-800">
-                <span
-                    class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-500 to-red-500 text-white flex items-center justify-center shadow-sm">
+            <a href="/dashboard.html" class="flex items-center gap-2.5 font-bold text-xl text-slate-900 tracking-tight">
+                <span class="w-9 h-9 rounded-xl bg-[#B94B27] text-white flex items-center justify-center shadow-sm">
                     <i class="fa-solid fa-box-open text-sm"></i>
                 </span>
-                <span>Kulkas <span class="text-orange-500">Virtual</span></span>
+                <span>Kulkas <span class="text-[#B94B27]">Virtual</span></span>
             </a>
 
             <div class="flex items-center gap-3">
                 <!-- TOMBOL BUKU RESEP FAVORIT -->
                 <button id="btn-buka-favorit"
-                    class="px-3.5 py-2 rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-100 transition-all flex items-center gap-2 text-xs font-bold border border-orange-100">
-                    <i class="fa-solid fa-heart text-red-500 text-sm"></i>
+                    class="px-3.5 py-2 rounded-xl bg-orange-50 text-[#B94B27] hover:bg-orange-100 transition-all flex items-center gap-2 text-xs font-bold border border-orange-100/50">
+                    <i class="fa-solid fa-heart text-[#B94B27] text-sm"></i>
                     <span class="hidden sm:inline">Buku Resepku</span>
                 </button>
 
@@ -121,8 +127,8 @@
                 <div class="relative">
                     <div class="flex items-center gap-2 cursor-pointer p-1 rounded-full hover:bg-slate-100 transition-colors"
                         id="avatar-trigger">
-                        <img src="https://ui-avatars.com/api/?name=Koki+Kos&background=f97316&color=fff"
-                            class="w-9 h-9 rounded-full border-2 border-orange-300 object-cover shadow-sm" alt="Profile"
+                        <img src="https://ui-avatars.com/api/?name=Koki+Kos&background=B94B27&color=fff"
+                            class="w-9 h-9 rounded-full border-2 border-orange-200 object-cover shadow-sm" alt="Profile"
                             id="user-avatar">
                         <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 mr-1 hidden sm:inline"></i>
                     </div>
@@ -135,11 +141,11 @@
                             <p class="text-[11px] text-slate-400 truncate" id="dropdown-user-email">Mode Hemat Aktif</p>
                         </div>
                         <button id="btn-buka-panduan"
-                            class="text-left px-4 py-3 text-xs font-semibold text-slate-700 hover:bg-orange-50 hover:text-orange-600 border-b border-slate-50 flex items-center gap-2.5">
+                            class="text-left px-4 py-3 text-xs font-semibold text-slate-700 hover:bg-orange-50 hover:text-[#B94B27] border-b border-slate-50 flex items-center gap-2.5">
                             <i class="fa-solid fa-book-open text-orange-400 w-4"></i> Panduan Penggunaan
                         </button>
                         <button id="btn-buka-pengaturan"
-                            class="text-left px-4 py-3 text-xs font-semibold text-slate-700 hover:bg-orange-50 hover:text-orange-600 border-b border-slate-50 flex items-center gap-2.5">
+                            class="text-left px-4 py-3 text-xs font-semibold text-slate-700 hover:bg-orange-50 hover:text-[#B94B27] border-b border-slate-50 flex items-center gap-2.5">
                             <i class="fa-solid fa-sliders text-blue-500 w-4"></i> Pengaturan Dapur & Akun
                         </button>
                         <button id="btn-logout"
@@ -153,53 +159,61 @@
     </nav>
 
     <!-- KONTEN UTAMA DASHBOARD -->
-    <main class="container mx-auto px-4 py-6 max-w-4xl relative z-10">
+    <main class="container mx-auto px-4 py-8 max-w-4xl relative z-10">
 
-        <!-- BANNER SAPAAN DINAMIS -->
+        <!-- BANNER SAPAAN ELEGAN (Modern Neoclassic) -->
         <div
-            class="bg-gradient-to-r from-slate-900 via-slate-800 to-orange-950 rounded-3xl p-6 mb-6 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
+            class="bg-white rounded-[2rem] p-8 mb-8 shadow-sm border border-slate-200/60 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <!-- Ornamen Background Tipis -->
+            <div
+                class="absolute top-0 right-0 w-64 h-64 bg-[#B94B27]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none">
+            </div>
+
+            <div class="flex items-center gap-5 relative z-10 w-full">
+                <!-- Avatar Sapaan -->
                 <div
-                    class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center text-3xl shrink-0 border border-white/15">
-                    👨‍🍳
+                    class="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+                    🌿
                 </div>
-                <div>
-                    <span
-                        class="px-2.5 py-0.5 rounded-full bg-orange-500/20 border border-orange-400/30 text-orange-300 text-[10px] font-bold uppercase tracking-wider">
-                        Dapur Pintar AI
-                    </span>
-                    <h1 class="text-lg md:text-xl font-bold mt-1" id="greeting-title">Halo, Koki Kosan! Mau masak apa
-                        kita?</h1>
-                    <p class="text-xs text-slate-300 mt-0.5">Pilih bahan manual, scan foto kulkas, atau pilih menu
-                        instan di bawah.</p>
+                <div class="flex-1">
+                    <h1 class="text-2xl font-bold text-slate-900 font-serif" id="greeting-title">
+                        Kulkas Virtual Kosan
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1 font-light">Kelola persediaan bahan, tetapkan anggaran, dan
+                        biarkan AI menentukan menu hari ini.</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2 bg-white/10 px-4 py-2.5 rounded-2xl border border-white/10 shrink-0">
-                <i class="fa-solid fa-bolt text-amber-400 text-sm"></i>
+
+            <!-- Indikator Status Server Premium -->
+            <div
+                class="flex items-center gap-3 bg-slate-50/80 px-5 py-3 rounded-2xl border border-slate-200/80 shrink-0 w-full md:w-auto relative z-10">
+                <div class="relative flex h-3 w-3">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </div>
                 <div class="text-left">
-                    <div class="text-[10px] text-slate-300">Status AI</div>
-                    <div class="text-xs font-bold text-emerald-400">Gemini Siap Meracik</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Engine Status</div>
+                    <div class="text-xs font-semibold text-slate-800">Gemini 1.5 Flash <span
+                            class="text-emerald-600">(Siap)</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB NAVIGASI 3 FITUR UTAMA -->
+        <!-- TAB NAVIGASI MINIMALIS MODERN -->
         <div
-            class="grid grid-cols-3 bg-white rounded-2xl p-1.5 shadow-sm border border-slate-200/70 mb-6 no-select gap-1.5">
+            class="flex bg-slate-100/70 rounded-2xl p-1.5 border border-slate-200/60 mb-8 no-select gap-1 w-full max-w-lg mx-auto">
             <button id="tab-manual"
-                class="py-3 px-2 text-center rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-xs sm:text-sm shadow-sm transition-all flex items-center justify-center gap-2">
-                <i class="fa-solid fa-list-check"></i>
-                <span>1. Pilih Manual</span>
+                class="flex-1 py-2.5 text-center rounded-xl bg-white text-slate-900 font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 border border-slate-200/50">
+                <i class="fa-solid fa-list-check text-[#B94B27]"></i> <span>Inventori</span>
             </button>
             <button id="tab-scan"
-                class="py-3 px-2 text-center rounded-xl text-slate-600 font-semibold text-xs sm:text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                <i class="fa-solid fa-camera"></i>
-                <span>2. Scan Bahan</span>
+                class="flex-1 py-2.5 text-center rounded-xl text-slate-500 font-medium text-sm hover:bg-white/50 transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-camera"></i> <span>Scan Visual</span>
             </button>
             <button id="tab-menu"
-                class="py-3 px-2 text-center rounded-xl text-slate-600 font-semibold text-xs sm:text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                <i class="fa-solid fa-utensils"></i>
-                <span>3. Menu Kost</span>
+                class="flex-1 py-2.5 text-center rounded-xl text-slate-500 font-medium text-sm hover:bg-white/50 transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-book-open"></i> <span>Katalog Menu</span>
             </button>
         </div>
 
@@ -212,7 +226,7 @@
                 <div class="flex items-center justify-between cursor-pointer no-select" id="btn-toggle-opsi">
                     <div class="flex items-center gap-3">
                         <div
-                            class="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-sm">
+                            class="w-9 h-9 rounded-xl bg-[#B94B27] text-white flex items-center justify-center shadow-sm">
                             <i class="fa-solid fa-sliders text-sm"></i>
                         </div>
                         <div>
@@ -225,14 +239,14 @@
                                 maupun Menu Kost</p>
                         </div>
                     </div>
-                    <i class="fa-solid fa-chevron-down text-orange-500 transition-transform duration-300"
+                    <i class="fa-solid fa-chevron-down text-[#B94B27] transition-transform duration-300"
                         id="icon-toggle-opsi"></i>
                 </div>
 
                 <div id="area-opsi-kos" class="hidden mt-4 pt-4 border-t border-orange-200/60 space-y-4 fade-in-up">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-2">
-                            <i class="fa-solid fa-plug-circle-check text-orange-500 mr-1"></i> Peralatan Masak yang
+                            <i class="fa-solid fa-plug-circle-check text-[#B94B27] mr-1"></i> Peralatan Masak yang
                             Tersedia di Kosanmu:
                         </label>
                         <div class="chip-container no-select" id="wadah-alat">
@@ -282,18 +296,18 @@
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                                <i class="fa-solid fa-wallet text-orange-500 mr-1"></i> Budget Belanja Tambahan Maksimal
+                                <i class="fa-solid fa-wallet text-[#B94B27] mr-1"></i> Budget Belanja Tambahan Maksimal
                                 (Rp):
                             </label>
                             <input type="number" id="input-budget" placeholder="Contoh: 15000"
-                                class="w-full px-4 py-2.5 rounded-xl border border-orange-200 focus:outline-none focus:border-orange-500 text-xs sm:text-sm bg-white">
+                                class="w-full px-4 py-2.5 rounded-xl border border-orange-200 focus:outline-none focus:border-[#B94B27] text-xs sm:text-sm bg-white">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                                <i class="fa-solid fa-pepper-hot text-red-500 mr-1"></i> Preferensi Level Pedas:
+                                <i class="fa-solid fa-pepper-hot text-red-600 mr-1"></i> Preferensi Level Pedas:
                             </label>
                             <select id="select-pedas"
-                                class="w-full px-4 py-2.5 rounded-xl border border-orange-200 focus:outline-none focus:border-orange-500 text-xs sm:text-sm bg-white font-medium text-slate-700">
+                                class="w-full px-4 py-2.5 rounded-xl border border-orange-200 focus:outline-none focus:border-[#B94B27] text-xs sm:text-sm bg-white font-medium text-slate-700">
                                 <option value="">Normal / Bebas</option>
                                 <option value="Tidak Pedas (Ramah Lambung)">Tidak Pedas (Ramah Lambung)</option>
                                 <option value="Pedas Sedang">Pedas Sedang Nikmat</option>
@@ -310,15 +324,16 @@
             <div id="section-manual" class="block fade-in-up">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                     <div>
-                        <h2 class="text-lg md:text-xl font-extrabold text-slate-800">Bahan apa yang ada di kosanmu?</h2>
-                        <p class="text-xs text-slate-500">Klik bahan untuk memilih. Koki AI akan menyusun resep terbaik
-                            untukmu.</p>
+                        <h2 class="text-lg md:text-xl font-bold text-slate-900 font-serif">Bahan apa yang ada di
+                            kosanmu?</h2>
+                        <p class="text-xs text-slate-500 font-light">Klik bahan untuk memilih. Koki AI akan menyusun
+                            resep terbaik untukmu.</p>
                     </div>
 
                     <!-- Badge Penghitung Bahan Terpilih -->
                     <div class="flex items-center gap-2 self-start sm:self-auto">
                         <span id="counter-bahan"
-                            class="px-3.5 py-1.5 rounded-full bg-orange-100 text-orange-700 font-bold text-xs border border-orange-200 transition-all">
+                            class="px-3.5 py-1.5 rounded-full bg-orange-50 text-[#B94B27] font-bold text-xs border border-orange-200 transition-all">
                             0 Bahan Dipilih
                         </span>
                         <button type="button" id="btn-reset-bahan"
@@ -331,8 +346,8 @@
                 <!-- LACI RINGKASAN BAHAN YANG DIPILIH (MUNCUL OTOMATIS SAAT ADA BAHAN DICENTANG) -->
                 <div id="selected-bahan-tray"
                     class="hidden mb-4 p-3.5 bg-orange-50/80 border border-orange-200/90 rounded-2xl fade-in-up">
-                    <div class="text-[11px] font-bold text-orange-800 mb-2 flex items-center gap-1.5">
-                        <i class="fa-solid fa-basket-shopping text-orange-500"></i>
+                    <div class="text-[11px] font-bold text-[#B94B27] mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-basket-shopping text-[#B94B27]"></i>
                         <span>Bahan Terpilih (Klik bahan untuk membatalkan):</span>
                     </div>
                     <div id="selected-bahan-list" class="flex flex-wrap gap-1.5"></div>
@@ -344,7 +359,7 @@
                         class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                     <input type="text" id="search-bahan"
                         placeholder="Cari cepat dari 300+ bahan (contoh: telur, sosis, tahu, cabai)..."
-                        class="w-full pl-11 pr-10 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:border-orange-500 text-xs sm:text-sm transition-all">
+                        class="w-full pl-11 pr-10 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:border-[#B94B27] text-xs sm:text-sm transition-all">
                     <button type="button" id="btn-clear-search"
                         class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                         <i class="fa-solid fa-circle-xmark"></i>
@@ -366,8 +381,8 @@
                     <!-- Tombol Sticky di Bawah Agar Mudah Dijangkau -->
                     <div class="sticky bottom-2 z-20 pt-2 bg-gradient-to-t from-white via-white to-transparent">
                         <button type="submit" id="btn-submit-manual"
-                            class="w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2.5 btn-shine">
-                            <i class="fa-solid fa-wand-magic-sparkles text-orange-400"></i>
+                            class="w-full bg-slate-900 hover:bg-[#B94B27] text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2.5 btn-shine">
+                            <i class="fa-solid fa-wand-magic-sparkles text-orange-300"></i>
                             <span id="teks-btn-racik">Racik Resep Sekarang!</span>
                         </button>
                     </div>
@@ -381,10 +396,10 @@
                 <div id="area-upload-foto">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
                         <div>
-                            <h2 class="text-lg md:text-xl font-extrabold text-slate-800">Pindai Bahan Makanan dengan AI
-                                📸</h2>
-                            <p class="text-xs text-slate-500">Jepret foto bahan di meja/kulkasmu, Vision AI kami akan
-                                mengenali bahannya secara instan.</p>
+                            <h2 class="text-lg md:text-xl font-bold text-slate-900 font-serif">Pindai Bahan Makanan
+                                dengan AI 📸</h2>
+                            <p class="text-xs text-slate-500 font-light">Jepret foto bahan di meja/kulkasmu, Vision AI
+                                kami akan mengenali bahannya secara instan.</p>
                         </div>
                         <span
                             class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-200 text-xs font-bold self-start sm:self-auto">
@@ -395,23 +410,25 @@
                     <!-- Tombol Pilihan Kamera & Galeri -->
                     <div id="area-pilihan-scan" class="grid sm:grid-cols-2 gap-4 mb-6">
                         <button id="btn-buka-kamera" type="button"
-                            class="bg-gradient-to-br from-orange-50/70 to-white border-2 border-orange-200 hover:border-orange-500 hover:shadow-md rounded-3xl p-6 flex flex-col items-center justify-center transition-all group text-center">
+                            class="bg-gradient-to-br from-orange-50/50 to-white border-2 border-orange-200 hover:border-[#B94B27] hover:shadow-md rounded-3xl p-6 flex flex-col items-center justify-center transition-all group text-center">
                             <div
-                                class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-orange-500 to-red-500 text-white flex items-center justify-center text-2xl mb-3 shadow-md shadow-orange-500/20 group-hover:scale-110 transition-transform">
+                                class="w-16 h-16 rounded-2xl bg-[#B94B27] text-white flex items-center justify-center text-2xl mb-3 shadow-md shadow-[#B94B27]/20 group-hover:scale-110 transition-transform">
                                 <i class="fa-solid fa-camera"></i>
                             </div>
-                            <span class="text-base font-extrabold text-slate-800">Buka Kamera Langsung</span>
-                            <span class="text-xs text-slate-500 mt-1">Arahkan kamera HP/Laptop ke bahan masakan</span>
+                            <span class="text-base font-bold text-slate-800">Buka Kamera Langsung</span>
+                            <span class="text-xs text-slate-500 mt-1 font-light">Arahkan kamera HP/Laptop ke bahan
+                                masakan</span>
                         </button>
 
                         <label
-                            class="cursor-pointer bg-gradient-to-br from-slate-50 to-white border-2 border-slate-200 hover:border-orange-500 hover:shadow-md rounded-3xl p-6 flex flex-col items-center justify-center transition-all group text-center">
+                            class="cursor-pointer bg-gradient-to-br from-slate-50 to-white border-2 border-slate-200 hover:border-[#B94B27] hover:shadow-md rounded-3xl p-6 flex flex-col items-center justify-center transition-all group text-center">
                             <div
-                                class="w-16 h-16 rounded-2xl bg-slate-800 group-hover:bg-orange-500 text-white flex items-center justify-center text-2xl mb-3 shadow-md transition-all group-hover:scale-110">
+                                class="w-16 h-16 rounded-2xl bg-slate-800 group-hover:bg-[#B94B27] text-white flex items-center justify-center text-2xl mb-3 shadow-md transition-all group-hover:scale-110">
                                 <i class="fa-solid fa-images"></i>
                             </div>
-                            <span class="text-base font-extrabold text-slate-800">Pilih Foto dari Galeri</span>
-                            <span class="text-xs text-slate-500 mt-1">Unggah foto bahan makanan (JPG / PNG)</span>
+                            <span class="text-base font-bold text-slate-800">Pilih Foto dari Galeri</span>
+                            <span class="text-xs text-slate-500 mt-1 font-light">Unggah foto bahan makanan (JPG /
+                                PNG)</span>
                             <input id="input-galeri" type="file" accept="image/*" class="hidden" />
                         </label>
                     </div>
@@ -422,7 +439,7 @@
                             class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
                             <i class="fa-solid fa-lightbulb"></i>
                         </div>
-                        <p class="text-xs text-slate-600 leading-relaxed">
+                        <p class="text-xs text-slate-600 font-light leading-relaxed">
                             <strong>Tips Koki AI:</strong> Letakkan bahan makanan di tempat terang agar kamera dapat
                             mendeteksi kombinasi menu anak kos secara akurat.
                         </p>
@@ -431,7 +448,7 @@
                     <!-- Viewfinder Kamera Live -->
                     <div id="kamera-container" class="hidden flex flex-col items-center mb-6 fade-in-up">
                         <div
-                            class="relative w-full h-[380px] bg-slate-950 rounded-3xl overflow-hidden shadow-inner border-2 border-orange-300 flex items-center justify-center">
+                            class="relative w-full h-[380px] bg-slate-950 rounded-3xl overflow-hidden shadow-inner border-2 border-[#B94B27] flex items-center justify-center">
                             <video id="kamera-video"
                                 class="w-full h-full object-cover transition-transform duration-300" autoplay
                                 playsinline></video>
@@ -441,10 +458,10 @@
                             </button>
                             <div class="absolute inset-0 pointer-events-none">
                                 <div
-                                    class="absolute inset-0 border-2 border-dashed border-orange-400/50 rounded-3xl z-10 m-5">
+                                    class="absolute inset-0 border-2 border-dashed border-[#B94B27]/50 rounded-3xl z-10 m-5">
                                 </div>
                                 <div
-                                    class="absolute left-5 right-5 h-1 bg-orange-400 shadow-[0_0_15px_rgba(249,115,22,1)] z-20 animate-scanline">
+                                    class="absolute left-5 right-5 h-1 bg-[#B94B27] shadow-[0_0_15px_#B94B27] z-20 animate-scanline">
                                 </div>
                             </div>
                         </div>
@@ -454,7 +471,7 @@
                                 Batal
                             </button>
                             <button type="button" id="btn-jepret-kamera"
-                                class="flex-[2] bg-gradient-to-r from-orange-500 to-red-500 text-white py-3.5 rounded-2xl font-bold shadow-md transition-all btn-shine text-sm">
+                                class="flex-[2] bg-[#B94B27] text-white py-3.5 rounded-2xl font-bold shadow-md transition-all btn-shine text-sm">
                                 <i class="fa-solid fa-camera mr-2"></i> Ambil Foto Bahan
                             </button>
                         </div>
@@ -463,7 +480,7 @@
 
                     <!-- Preview Foto Sebelum Dikirim -->
                     <div id="preview-container"
-                        class="hidden relative w-full h-72 bg-slate-900 rounded-3xl overflow-hidden mb-5 shadow-md border-2 border-orange-200">
+                        class="hidden relative w-full h-72 bg-slate-900 rounded-3xl overflow-hidden mb-5 shadow-md border-2 border-[#B94B27]">
                         <img id="preview-foto" class="w-full h-full object-contain" alt="Preview">
                         <button id="btn-batal-foto"
                             class="absolute top-3 right-3 bg-white/90 backdrop-blur text-slate-700 w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:bg-red-500 hover:text-white transition-colors">
@@ -472,8 +489,8 @@
                     </div>
 
                     <button id="btn-submit-scan"
-                        class="w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2 btn-shine hidden">
-                        <i class="fa-solid fa-wand-magic-sparkles text-orange-400"></i>
+                        class="w-full bg-slate-900 hover:bg-[#B94B27] text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2 btn-shine hidden">
+                        <i class="fa-solid fa-wand-magic-sparkles text-orange-300"></i>
                         <span>Analisis Bahan & Cari Resep!</span>
                     </button>
                 </div>
@@ -488,12 +505,12 @@
                                 resep lengkapnya (otomatis mengikuti filter alat & budget kosmu).</p>
                         </div>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm mb-3">
-                        <i class="fa-solid fa-fire text-orange-500 mr-1.5"></i> Rekomendasi Menu dari Foto Kulkasmu:
+                    <h3 class="font-bold text-slate-800 text-sm mb-3 font-serif">
+                        <i class="fa-solid fa-fire text-[#B94B27] mr-1.5"></i> Rekomendasi Menu dari Foto Kulkasmu:
                     </h3>
                     <div class="grid sm:grid-cols-2 gap-3 mb-6" id="daftar-menu-scan"></div>
                     <button id="btn-scan-ulang"
-                        class="w-full py-3.5 text-slate-600 hover:text-orange-600 bg-slate-100 hover:bg-orange-50 font-bold rounded-2xl transition-colors text-xs sm:text-sm">
+                        class="w-full py-3.5 text-slate-600 hover:text-[#B94B27] bg-slate-100 hover:bg-orange-50 font-bold rounded-2xl transition-colors text-xs sm:text-sm border border-slate-200">
                         <i class="fa-solid fa-rotate-right mr-1.5"></i> Scan Foto Bahan Lainnya
                     </button>
                 </div>
@@ -505,12 +522,13 @@
             <div id="section-menu" class="hidden fade-in-up">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                     <div>
-                        <h2 class="text-lg md:text-xl font-extrabold text-slate-800">Katalog Menu Dewa Anak Kos 🍲</h2>
-                        <p class="text-xs text-slate-500">Pilih menu legendaris anak kos, AI akan menyesuaikan langkah
-                            masaknya dengan alat & budgetmu.</p>
+                        <h2 class="text-lg md:text-xl font-bold text-slate-900 font-serif">Katalog Menu Dewa Anak Kos 🍲
+                        </h2>
+                        <p class="text-xs text-slate-500 font-light">Pilih menu legendaris anak kos, AI akan
+                            menyesuaikan langkah masaknya dengan alat & budgetmu.</p>
                     </div>
                     <span
-                        class="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold self-start sm:self-auto">
+                        class="px-3 py-1 rounded-full bg-orange-50 text-[#B94B27] border border-orange-100 text-xs font-bold self-start sm:self-auto">
                         50 Menu Populer
                     </span>
                 </div>
@@ -521,7 +539,7 @@
                         class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                     <input type="text" id="search-menu-kost"
                         placeholder="Cari menu kos (contoh: nasi goreng, mie, telur, ayam, tahu)..."
-                        class="w-full pl-11 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:border-orange-500 text-xs sm:text-sm transition-all">
+                        class="w-full pl-11 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:border-[#B94B27] text-xs sm:text-sm transition-all">
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 max-h-[55vh] overflow-y-auto custom-scroll pr-2"
@@ -539,14 +557,14 @@
     <div id="favorit-modal"
         class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
         <div
-            class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]">
+            class="bg-white rounded-[2rem] p-6 md:p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]">
             <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-100">
                 <div class="flex items-center gap-2.5">
-                    <span class="w-9 h-9 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+                    <span class="w-9 h-9 rounded-xl bg-orange-50 text-[#B94B27] flex items-center justify-center">
                         <i class="fa-solid fa-book-bookmark"></i>
                     </span>
                     <div>
-                        <h3 class="text-lg font-extrabold text-slate-800">Buku Resepku</h3>
+                        <h3 class="text-lg font-bold text-slate-800 font-serif">Buku Resepku</h3>
                         <p class="text-[11px] text-slate-400">Tersimpan di Cloud Firestore</p>
                     </div>
                 </div>
@@ -565,10 +583,10 @@
     <div id="panduan-modal"
         class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
         <div
-            class="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]">
+            class="bg-white rounded-[2rem] p-6 md:p-8 max-w-lg w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]">
             <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-100">
-                <h3 class="text-xl font-extrabold text-slate-800">
-                    <i class="fa-solid fa-book-open text-orange-500 mr-2"></i> Panduan Penggunaan
+                <h3 class="text-xl font-bold text-slate-800 font-serif">
+                    <i class="fa-solid fa-book-open text-[#B94B27] mr-2"></i> Panduan Penggunaan
                 </h3>
                 <button id="btn-tutup-panduan"
                     class="text-slate-400 hover:text-red-500 transition-colors text-xl w-8 h-8">
@@ -576,21 +594,22 @@
                 </button>
             </div>
             <div class="overflow-y-auto custom-scroll pr-2 space-y-4">
-                <div class="bg-orange-50/70 p-4 rounded-2xl border border-orange-100">
-                    <h4 class="font-bold text-orange-800 text-sm mb-1">1. Atur Alat & Budget Kos (Opsional)</h4>
-                    <p class="text-xs text-slate-600 leading-relaxed">Buka panel Filter Kondisi Anak Kos di bagian atas
-                        untuk memilih alat masak yang kamu punya (misal hanya Rice Cooker) dan batas uang belanja
-                        ekstra.</p>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-1">1. Atur Alat & Budget Kos (Opsional)</h4>
+                    <p class="text-xs text-slate-500 font-light leading-relaxed">Buka panel Filter Kondisi Anak Kos di
+                        bagian atas untuk memilih alat masak yang kamu punya (misal hanya Rice Cooker) dan batas uang
+                        belanja ekstra.</p>
                 </div>
-                <div class="bg-blue-50/70 p-4 rounded-2xl border border-blue-100">
-                    <h4 class="font-bold text-blue-800 text-sm mb-1">2. Pilih Bahan, Scan Foto, atau Klik Menu</h4>
-                    <p class="text-xs text-slate-600 leading-relaxed">Gunakan tab Pilih Manual untuk mencentang bahan,
-                        tab Scan Bahan untuk memfoto isi kulkas, atau tab Menu Kost untuk memilih masakan populer.</p>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-1">2. Pilih Bahan, Scan Foto, atau Klik Menu</h4>
+                    <p class="text-xs text-slate-500 font-light leading-relaxed">Gunakan tab Pilih Manual untuk
+                        mencentang bahan, tab Scan Bahan untuk memfoto isi kulkas, atau tab Menu Kost untuk memilih
+                        masakan populer.</p>
                 </div>
-                <div class="bg-emerald-50/70 p-4 rounded-2xl border border-emerald-100">
-                    <h4 class="font-bold text-emerald-800 text-sm mb-1">3. Simpan ke Cloud & Bagikan ke WhatsApp</h4>
-                    <p class="text-xs text-slate-600 leading-relaxed">Resep yang sudah diracik oleh Gemini AI dapat kamu
-                        simpan ke Buku Resep Favorit atau dibagikan langsung ke teman kos lewat WhatsApp.</p>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-1">3. Simpan ke Cloud & Bagikan ke WhatsApp</h4>
+                    <p class="text-xs text-slate-500 font-light leading-relaxed">Resep yang sudah diracik oleh Gemini AI
+                        dapat kamu simpan ke Buku Resep Favorit atau dibagikan langsung ke teman kos lewat WhatsApp.</p>
                 </div>
             </div>
         </div>
@@ -602,14 +621,14 @@
     <div id="pengaturan-modal"
         class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
         <div
-            class="bg-white rounded-3xl p-6 md:p-7 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[88vh]">
+            class="bg-white rounded-[2rem] p-6 md:p-7 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[88vh]">
             <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-100">
                 <div class="flex items-center gap-2.5">
                     <span class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
                         <i class="fa-solid fa-sliders"></i>
                     </span>
                     <div>
-                        <h3 class="text-lg font-extrabold text-slate-800">Pengaturan Dapur</h3>
+                        <h3 class="text-lg font-bold text-slate-800 font-serif">Pengaturan Dapur</h3>
                         <p class="text-[11px] text-slate-400">Preferensi otomatis akun & kosanmu</p>
                     </div>
                 </div>
@@ -622,13 +641,13 @@
                 <!-- Info Akun Aktif -->
                 <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/70 flex items-center gap-3">
                     <img id="settings-user-avatar"
-                        src="https://ui-avatars.com/api/?name=Koki+Kos&background=f97316&color=fff"
-                        class="w-11 h-11 rounded-full border-2 border-orange-300 object-cover" alt="User">
+                        src="https://ui-avatars.com/api/?name=Koki+Kos&background=B94B27&color=fff"
+                        class="w-11 h-11 rounded-full border-2 border-orange-200 object-cover" alt="User">
                     <div class="overflow-hidden">
-                        <div class="text-xs font-extrabold text-slate-800 truncate" id="settings-user-name">Koki Anak
-                            Kos</div>
-                        <div class="text-[11px] text-slate-500 truncate" id="settings-user-email">Terhubung dengan
-                            Google OAuth</div>
+                        <div class="text-xs font-bold text-slate-800 truncate" id="settings-user-name">Koki Anak Kos
+                        </div>
+                        <div class="text-[11px] text-slate-500 truncate font-light" id="settings-user-email">Terhubung
+                            dengan Google OAuth</div>
                         <span
                             class="inline-block mt-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-bold">Kuota
                             AI: 5 Resep / Hari</span>
@@ -637,14 +656,13 @@
 
                 <!-- Preferensi Default Anak Kos -->
                 <div class="space-y-3">
-                    <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Preferensi Default Kosan
-                    </h4>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Preferensi Default Kosan</h4>
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Alat Masak Utama yang Selalu
                             Ada:</label>
                         <select id="setting-default-alat"
-                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 focus:outline-none focus:border-orange-500 bg-white">
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 focus:outline-none focus:border-[#B94B27] bg-white">
                             <option value="">Tidak ada default (Pilih manual tiap masak)</option>
                             <option value="Rice Cooker">🍚 Hanya Punya Rice Cooker</option>
                             <option value="Kompor 1 Tungku, Wajan, Panci Rebus">🍳 Standar Kos (Kompor, Wajan, Panci)
@@ -657,12 +675,12 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Default Budget (Rp):</label>
                             <input type="number" id="setting-default-budget" placeholder="Misal: 15000"
-                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-orange-500">
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#B94B27]">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Default Level Pedas:</label>
                             <select id="setting-default-pedas"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 focus:outline-none focus:border-orange-500 bg-white">
+                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 focus:outline-none focus:border-[#B94B27] bg-white">
                                 <option value="">Normal</option>
                                 <option value="Tidak Pedas (Ramah Lambung)">Tidak Pedas</option>
                                 <option value="Pedas Sedang">Pedas Sedang</option>
@@ -676,7 +694,7 @@
                 <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
                     <div>
                         <div class="text-xs font-bold text-slate-700">Bersihkan Sesi Resep Sementara</div>
-                        <div class="text-[11px] text-slate-400">Hapus cache resep terakhir di browser</div>
+                        <div class="text-[11px] text-slate-400 font-light">Hapus cache resep terakhir di browser</div>
                     </div>
                     <button type="button" id="btn-clear-cache"
                         class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 text-xs font-bold transition-colors">
@@ -687,7 +705,7 @@
 
             <div class="pt-4 mt-4 border-t border-slate-100 flex gap-2">
                 <button type="button" id="btn-simpan-pengaturan"
-                    class="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-3 rounded-xl shadow-md hover:opacity-95 transition-all text-xs sm:text-sm btn-shine">
+                    class="w-full bg-slate-900 text-white hover:bg-[#B94B27] font-bold py-3 rounded-xl shadow-md transition-all text-xs sm:text-sm btn-shine">
                     <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan & Terapkan Pengaturan
                 </button>
             </div>
@@ -700,15 +718,15 @@
     <div id="error-modal"
         class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0 duration-300">
         <div
-            class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300 text-center border-t-4 border-red-500">
+            class="bg-white rounded-[2rem] p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300 text-center border-t-4 border-red-500">
             <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <i class="fa-solid fa-triangle-exclamation text-3xl text-red-500"></i>
             </div>
-            <h3 class="text-lg font-extrabold text-slate-800 mb-2">Perhatian Koki!</h3>
-            <p id="error-message" class="text-slate-500 text-xs sm:text-sm mb-6 leading-relaxed">Sistem sedang sibuk.
-            </p>
+            <h3 class="text-lg font-bold text-slate-800 mb-2 font-serif">Perhatian Koki!</h3>
+            <p id="error-message" class="text-slate-500 text-xs sm:text-sm mb-6 leading-relaxed font-light">Sistem
+                sedang sibuk.</p>
             <button id="btn-close-modal"
-                class="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold py-3 rounded-xl shadow-md text-sm">
+                class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl shadow-md text-sm transition-colors">
                 Mengerti
             </button>
         </div>
