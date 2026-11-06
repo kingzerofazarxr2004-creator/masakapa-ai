@@ -1,8 +1,49 @@
 const genAI = require('../config/gemini-config');
 
-// Gunakan SATU model standar yang paling stabil, cepat, dan dijamin aktif
-const namaModelUtama = "gemini-1.5-flash";
+// 🚀 SISTEM MULTI-MODEL KEBOHONGAN (FALLBACK)
+// Sesuai permintaan API, kita menggunakan gemini-3.8-flash sebagai model utama.
+// Jika beban terlalu berat (10-20 bahan) dan model pertama gagal, sistem otomatis melompat ke model cadangan.
+const daftarModel = [
+    "gemini-3.8-flash",       // Model utama yang paling direkomendasikan Google saat ini
+    "gemini-3.5-flash",       // Cadangan pertama (Sangat stabil)
+    "gemini-3.5-flash-lite",  // Cadangan kedua (Versi ringan dan kilat)
+    "gemini-4-argon"          // Cadangan terakhir
+];
 
+const panggilGeminiDenganFallback = async (promptData) => {
+    let errorTerakhir;
+
+    for (let i = 0; i < daftarModel.length; i++) {
+        const namaModel = daftarModel[i];
+
+        try {
+            console.log(`[AI] Mencoba meracik dengan ${namaModel}...`);
+            const model = genAI.getGenerativeModel({ model: namaModel });
+
+            // Eksekusi pemanggilan ke API Google
+            const result = await model.generateContent(promptData);
+
+            console.log(`[AI] ✅ BERHASIL menggunakan model: ${namaModel}`);
+            return result.response.text();
+
+        } catch (error) {
+            errorTerakhir = error;
+            const pesanError = error.message || String(error);
+
+            // Cegat langsung jika error disebabkan oleh API Key yang bermasalah
+            if (pesanError.includes("API_KEY_INVALID") || pesanError.includes("API key not valid") || pesanError.includes("403")) {
+                throw new Error("Kunci API Gemini tidak valid. Silakan periksa di Google AI Studio.");
+            }
+
+            console.warn(`[AI] ⚠️ Gagal pakai ${namaModel}: ${pesanError.split('\n')[0]}. Beralih ke model berikutnya...`);
+            // Sistem tidak akan menunggu (delay), langsung beralih ke model berikutnya dalam sepersekian detik
+            continue;
+        }
+    }
+
+    // Jika semua model dalam daftar gagal
+    throw new Error(errorTerakhir?.message || "Lalu lintas server AI Google sedang padat. Coba lagi dalam beberapa detik!");
+};
 
 const generateResep = async (req, res) => {
     try {
@@ -36,15 +77,8 @@ const generateResep = async (req, res) => {
             return res.status(400).json({ error: "Bahan makanan atau pilihan menu tidak boleh kosong!" });
         }
 
-        console.log(`[AI] Meracik resep dengan ${namaModelUtama}...`);
-        const model = genAI.getGenerativeModel({ model: namaModelUtama });
-
-        // Memanggil AI dengan format yang sangat sederhana dan aman
-        const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
-
-        console.log(`[AI] ✅ BERHASIL membuat resep`);
-        res.json({ resep: responseText });
+        const teksResep = await panggilGeminiDenganFallback(prompt);
+        res.json({ resep: teksResep });
 
     } catch (error) {
         console.error("Error AI Generate Resep:", error);
@@ -64,9 +98,6 @@ const scanKulkas = async (req, res) => {
         Format keluaran WAJIB HANYA berupa JSON Array string murni, tanpa teks awalan/akhiran, tanpa format markdown. 
         Contoh persis: ["Telur Dadar Crispy", "Tumis Sayur Pedas", "Sup Bening Sederhana"]`;
 
-        console.log(`[AI] Menganalisis gambar dengan ${namaModelUtama}...`);
-        const model = genAI.getGenerativeModel({ model: namaModelUtama });
-
         const imagePart = {
             inlineData: {
                 data: imageBase64,
@@ -74,20 +105,17 @@ const scanKulkas = async (req, res) => {
             }
         };
 
-        // Memanggil AI untuk menganalisis teks dan gambar sekaligus
-        const result = await model.generateContent([prompt, imagePart]);
-        const responseText = result.response.text();
+        const responseAI = await panggilGeminiDenganFallback([prompt, imagePart]);
 
         let menuRekomendasi = [];
         try {
-            let cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+            let cleanJson = responseAI.replace(/```json/g, '').replace(/```/g, '').trim();
             menuRekomendasi = JSON.parse(cleanJson);
         } catch (e) {
-            console.error("Gagal memecah JSON dari AI:", responseText);
+            console.error("Gagal memecah JSON dari AI:", responseAI);
             return res.status(500).json({ error: "Koki AI kesulitan mengenali bahannya. Coba foto dengan lebih terang!" });
         }
 
-        console.log(`[AI] ✅ BERHASIL mengenali bahan`);
         res.json({ daftarMenu: menuRekomendasi });
 
     } catch (error) {
