@@ -1,49 +1,49 @@
 const genAI = require('../config/gemini-config');
 
-// Di dalam file controllers/aiController.js
+// 🚀 DAFTAR MODEL "AJAIB" & SUPER CEPAT (Tahan Banting & Sesuai Free Tier)
+// Disusun dari yang paling cepat merespons hingga model cadangan terakhir
 const daftarModel = [
-    "gemini-3.5-flash", // Update ke model terbaru yang direkomendasikan
-    "gemini-1.5-flash", // Fallback ke model stabil yang masih aktif
-    "gemini-3.1-pro",
-    "gemini-1.0-pro",
+    "gemini-1.5-flash-8b",      // Paling ringan & paling ngebut (Waktu respons milidetik)
+    "gemini-1.5-flash",         // Cepat & akurat (Standar)
+    "gemini-1.5-flash-latest",  // Selalu diarahkan ke versi flash rilis terbaru
+    "gemini-1.0-pro",           // Stabil (Model lama tapi masih sangat kuat)
+    "gemini-pro"                // Fallback terakhir
 ];
 
+// Fungsi delay disimpan untuk berjaga-jaga jika semua server penuh (Rate Limit Global)
 const tungguSeketika = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const panggilGeminiDenganFallback = async (promptData) => {
     let errorTerakhir;
+
     for (let i = 0; i < daftarModel.length; i++) {
         const namaModel = daftarModel[i];
-        const batasCoba = 2;
 
-        for (let j = 1; j <= batasCoba; j++) {
-            try {
-                console.log(`[AI] Sedang meracik dengan ${namaModel} (Percobaan ${j})...`);
-                const model = genAI.getGenerativeModel({ model: namaModel });
-                const result = await model.generateContent(promptData);
-                console.log(`[AI] ✅ BERHASIL menggunakan model: ${namaModel}`);
-                return result.response.text();
-            } catch (error) {
-                errorTerakhir = error;
-                const pesanError = error.message || String(error);
+        try {
+            console.log(`[AI] Sedang meracik dengan ${namaModel}...`);
+            const model = genAI.getGenerativeModel({ model: namaModel });
+            const result = await model.generateContent(promptData);
 
-                // Jika API Key tidak valid atau diblokir Google, langsung hentikan dan beri tahu user
-                if (pesanError.includes("API_KEY_INVALID") || pesanError.includes("API key not valid") || pesanError.includes("leaked") || pesanError.includes("403")) {
-                    throw new Error("GEMINI_API_KEY tidak valid atau telah dinonaktifkan oleh Google. Silakan buat API Key baru di Google AI Studio lalu pasang di Railway / .env.");
-                }
+            console.log(`[AI] ✅ BERHASIL menggunakan model: ${namaModel}`);
+            return result.response.text();
 
-                if ((pesanError.includes("503") || pesanError.includes("429")) && j < batasCoba) {
-                    const jeda = j * 2500;
-                    console.warn(`[AI] ⚠️ Server sibuk. Menunggu ${jeda / 1000} detik sebelum mencoba ulang...`);
-                    await tungguSeketika(jeda);
-                    continue;
-                }
-                console.error(`[AI] ❌ GAGAL pakai ${namaModel}: ${pesanError.split('\n')[0]}`);
-                break;
+        } catch (error) {
+            errorTerakhir = error;
+            const pesanError = error.message || String(error);
+
+            // Jika API Key tidak valid, langsung hentikan proses agar tidak buang waktu mencoba model lain
+            if (pesanError.includes("API_KEY_INVALID") || pesanError.includes("API key not valid") || pesanError.includes("leaked") || pesanError.includes("403")) {
+                throw new Error("GEMINI_API_KEY tidak valid atau diblokir. Periksa kredensial di Google AI Studio.");
             }
+
+            console.warn(`[AI] ⚠️ GAGAL pakai ${namaModel}: ${pesanError.split('\n')[0]}. Langsung beralih ke model berikutnya...`);
+            // Berkat kode ini, jika gagal, sistem TIDAK AKAN MENUNGGU. Langsung gas ke model AI selanjutnya.
+            continue;
         }
     }
-    throw new Error(errorTerakhir?.message || "Lalu lintas server AI Google sedang sangat padat. Coba lagi dalam beberapa saat ya!");
+
+    // Jika kelima model di atas gagal semua, baru tampilkan error
+    throw new Error(errorTerakhir?.message || "Lalu lintas server AI Google sedang sangat padat. Coba lagi dalam beberapa detik ya!");
 };
 
 const generateResep = async (req, res) => {
@@ -52,8 +52,8 @@ const generateResep = async (req, res) => {
         let prompt = "";
 
         const filterAlat = alat ? `\n- PERALATAN TERSEDIA: ${alat}. Tolong pastikan langkah memasak HANYA menggunakan alat-alat ini.` : '';
-        const filterBudget = budget ? `\n- BUDGET BELANJA EKSTRA: Maksimal Rp${budget}. Jika butuh bahan tambahan di luar yang saya sebutkan, pastikan harganya sangat murah dan totalnya tidak melebihi budget.` : '';
-        const filterPedas = pedas ? `\n- PREFERENSI LEVEL PEDAS: ${pedas}. Sesuaikan takaran cabai, sambal, atau lada agar pas dengan level pedas ini.` : '';
+        const filterBudget = budget ? `\n- BUDGET BELANJA EKSTRA: Maksimal Rp${budget}. Pastikan harganya sangat murah dan totalnya tidak melebihi budget.` : '';
+        const filterPedas = pedas ? `\n- PREFERENSI LEVEL PEDAS: ${pedas}. Sesuaikan takaran cabai atau lada agar pas.` : '';
 
         if (menuPilihan) {
             prompt = `Tolong berikan daftar bahan-bahan dan langkah-langkah cara membuat masakan: ${menuPilihan}. 
@@ -65,7 +65,7 @@ const generateResep = async (req, res) => {
             4. Bahan-bahan yang dibutuhkan
             5. Langkah-langkah singkat.`;
         } else if (bahan && bahan.length > 0) {
-            prompt = `Saya adalah mahasiswa anak kos yang sedang berhemat di akhir bulan. 
+            prompt = `Saya adalah mahasiswa anak kos yang sedang berhemat. 
             Di kulkas saya HANYA ada bahan berikut: ${bahan.join(', ')}. 
             Tolong buatkan 1 resep masakan yang paling masuk akal, lezat, dan mengenyangkan. ${filterAlat} ${filterBudget} ${filterPedas}
             Tuliskan dengan format:
@@ -80,6 +80,7 @@ const generateResep = async (req, res) => {
 
         const teksResep = await panggilGeminiDenganFallback(prompt);
         res.json({ resep: teksResep });
+
     } catch (error) {
         console.error("Error AI Generate Resep:", error);
         res.status(500).json({ error: error.message || "Koki AI sedang pusing. Coba lagi nanti ya!" });
@@ -111,6 +112,7 @@ const scanKulkas = async (req, res) => {
         }
 
         res.json({ daftarMenu: menuRekomendasi });
+
     } catch (error) {
         console.error("Error AI Scan Kulkas:", error);
         res.status(500).json({ error: error.message || "Gagal mendeteksi gambar kulkas." });
