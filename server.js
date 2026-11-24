@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// PENTING UNTUK RAILWAY: Mengizinkan proxy agar express-rate-limit tidak error
+// PENTING UNTUK PROXY (RAILWAY / VERCEL): Mengizinkan proxy agar express-rate-limit tidak error
 app.set('trust proxy', 1);
 
 // 2. PASANG HELMET
@@ -39,7 +39,12 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Terjadi kesalahan internal pada server MasakApa.ai' });
 });
 
-// Menyalakan Server
-app.listen(port, () => {
-    console.log(`✅ Server MasakApa.ai v2.0 (Clean Architecture) menyala di http://localhost:${port}`);
-});
+// Menyalakan Server hanya saat dijalankan di lokal (bukan Vercel)
+if (!process.env.VERCEL) {
+    app.listen(port, () => {
+        console.log(`✅ Server MasakApa.ai v2.0 (Clean Architecture) menyala di http://localhost:${port}`);
+    });
+}
+
+// Wajib diekspor agar bisa dibaca oleh Vercel
+module.exports = app;
