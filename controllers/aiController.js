@@ -1,14 +1,30 @@
 const genAI = require('../config/gemini-config');
 
-// 🚀 SISTEM MULTI-MODEL KEBOHONGAN (FALLBACK)
-// Sesuai permintaan API, kita menggunakan gemini-3.8-flash sebagai model utama.
-// Jika beban terlalu berat (10-20 bahan) dan model pertama gagal, sistem otomatis melompat ke model cadangan.
+// 🚀 SISTEM MULTI-MODEL FALLBACK
+// Jika beban berat (10-20 bahan) dan model utama terlalu lambat atau gagal,
+// sistem otomatis memotong setelah 25 detik lalu melompat ke model cadangan.
 const daftarModel = [
-    "gemini-3.8-flash",       // Model utama yang paling direkomendasikan Google saat ini
+    "gemini-3.8-flash",       // Model utama
     "gemini-3.5-flash",       // Cadangan pertama (Sangat stabil)
     "gemini-3.5-flash-lite",  // Cadangan kedua (Versi ringan dan kilat)
-    "gemini-4-argon"          // Cadangan terakhir
+    "gemini-4-Neon"          // Cadangan terakhir
 ];
+
+const TIMEOUT_PER_MODEL_MS = 25000; // Maksimal tunggu 25 detik per model
+
+const jalankanDenganTimeout = (promise, ms) => {
+    let timer;
+    const timeoutPromise = new Promise((_, reject) => {
+        timer = setTimeout(() => {
+            reject(new Error(`Timeout setelah ${ms / 1000} detik`));
+        }, ms);
+    });
+
+    // Cegah unhandled rejection di Node.js 22 jika promise asli gagal setelah timeout
+    promise.catch(() => { });
+
+    return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timer));
+};
 
 const panggilGeminiDenganFallback = async (promptData) => {
     let errorTerakhir;
@@ -18,13 +34,27 @@ const panggilGeminiDenganFallback = async (promptData) => {
 
         try {
             console.log(`[AI] Mencoba meracik dengan ${namaModel}...`);
-            const model = genAI.getGenerativeModel({ model: namaModel });
+            const model = genAI.getGenerativeModel({
+                model: namaModel,
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 1500
+                }
+            });
 
-            // Eksekusi pemanggilan ke API Google
-            const result = await model.generateContent(promptData);
+            // Eksekusi pemanggilan ke API Google dengan batas waktu 25 detik
+            const result = await jalankanDenganTimeout(
+                model.generateContent(promptData, { timeout: TIMEOUT_PER_MODEL_MS }),
+                TIMEOUT_PER_MODEL_MS
+            );
+
+            const teks = result.response.text();
+            if (!teks || !teks.trim()) {
+                throw new Error("Respons AI kosong.");
+            }
 
             console.log(`[AI] ✅ BERHASIL menggunakan model: ${namaModel}`);
-            return result.response.text();
+            return teks;
 
         } catch (error) {
             errorTerakhir = error;
@@ -36,7 +66,6 @@ const panggilGeminiDenganFallback = async (promptData) => {
             }
 
             console.warn(`[AI] ⚠️ Gagal pakai ${namaModel}: ${pesanError.split('\n')[0]}. Beralih ke model berikutnya...`);
-            // Sistem tidak akan menunggu (delay), langsung beralih ke model berikutnya dalam sepersekian detik
             continue;
         }
     }
@@ -50,24 +79,24 @@ const generateResep = async (req, res) => {
         const { bahan, menuPilihan, alat, budget, pedas } = req.body;
         let prompt = "";
 
-        const filterAlat = alat ? `\n- PERALATAN TERSEDIA: ${alat}. Tolong pastikan langkah memasak HANYA menggunakan alat-alat ini.` : '';
+        const filterAlat = alat ? `\n- PERALATAN TERSEDIA: ${alat}. Pastikan langkah memasak HANYA menggunakan alat-alat ini.` : '';
         const filterBudget = budget ? `\n- BUDGET BELANJA EKSTRA: Maksimal Rp${budget}. Pastikan harganya sangat murah dan totalnya tidak melebihi budget.` : '';
         const filterPedas = pedas ? `\n- PREFERENSI LEVEL PEDAS: ${pedas}. Sesuaikan takaran cabai atau lada agar pas.` : '';
 
         if (menuPilihan) {
-            prompt = `Tolong berikan daftar bahan-bahan dan langkah-langkah cara membuat masakan: ${menuPilihan}. 
+            prompt = `Tolong berikan daftar bahan-bahan dan langkah-langkah cara membuat masakan: ${menuPilihan}.
             Sesuaikan porsi, alat, dan cara pembuatannya untuk gaya anak kost (praktis, murah, dan anti-ribet). ${filterAlat} ${filterBudget} ${filterPedas}
-            Tuliskan dengan format:
+            Tulis secara ringkas, padat, dan langsung ke poin dengan format:
             1. Nama Masakan
             2. Estimasi Biaya
             3. Waktu Memasak
             4. Bahan-bahan yang dibutuhkan
             5. Langkah-langkah singkat.`;
         } else if (bahan && bahan.length > 0) {
-            prompt = `Saya adalah mahasiswa anak kos yang sedang berhemat. 
-            Di kulkas saya HANYA ada bahan berikut: ${bahan.join(', ')}. 
-            Tolong buatkan 1 resep masakan yang paling masuk akal, lezat, dan mengenyangkan. ${filterAlat} ${filterBudget} ${filterPedas}
-            Tuliskan dengan format:
+            prompt = `Saya adalah mahasiswa anak kos yang sedang berhemat.
+            Di kulkas saya ada bahan berikut: ${bahan.join(', ')}.
+            Tolong buatkan 1 resep masakan yang paling masuk akal, lezat, dan mengenyangkan. Jika daftar bahan cukup banyak, kamu tidak wajib memaksakan semuanya—pilih kombinasi bahan terbaik yang paling serasi. ${filterAlat} ${filterBudget} ${filterPedas}
+            Tulis secara ringkas, padat, dan langsung ke poin dengan format:
             1. Nama Masakan (Beri nama yang kreatif)
             2. Estimasi Biaya (Sangat murah)
             3. Waktu Memasak
@@ -94,8 +123,8 @@ const scanKulkas = async (req, res) => {
             return res.status(400).json({ error: "Gambar bahan makanan tidak ditemukan!" });
         }
 
-        const prompt = `Perhatikan gambar bahan makanan ini. Berikan 5 hingga 10 rekomendasi nama masakan lezat dan praktis ala anak kos yang bisa dibuat HANYA dengan bahan-bahan dominan di gambar tersebut (boleh ditambah bumbu dasar biasa). 
-        Format keluaran WAJIB HANYA berupa JSON Array string murni, tanpa teks awalan/akhiran, tanpa format markdown. 
+        const prompt = `Perhatikan gambar bahan makanan ini. Berikan 5 hingga 10 rekomendasi nama masakan lezat dan praktis ala anak kos yang bisa dibuat HANYA dengan bahan-bahan dominan di gambar tersebut (boleh ditambah bumbu dasar biasa).
+        Format keluaran WAJIB HANYA berupa JSON Array string murni, tanpa teks awalan/akhiran, tanpa format markdown.
         Contoh persis: ["Telur Dadar Crispy", "Tumis Sayur Pedas", "Sup Bening Sederhana"]`;
 
         const imagePart = {
@@ -109,7 +138,11 @@ const scanKulkas = async (req, res) => {
 
         let menuRekomendasi = [];
         try {
-            let cleanJson = responseAI.replace(/```json/g, '').replace(/```/g, '').trim();
+            let cleanJson = responseAI.replace(/```json/gi, '').replace(/```/g, '').trim();
+            const matchArray = cleanJson.match(/\[[\s\S]*\]/);
+            if (matchArray) {
+                cleanJson = matchArray[0];
+            }
             menuRekomendasi = JSON.parse(cleanJson);
         } catch (e) {
             console.error("Gagal memecah JSON dari AI:", responseAI);
