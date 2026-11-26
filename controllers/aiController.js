@@ -2,15 +2,15 @@ const genAI = require('../config/gemini-config');
 
 // 🚀 SISTEM MULTI-MODEL FALLBACK
 // Jika beban berat (10-20 bahan) dan model utama terlalu lambat atau gagal,
-// sistem otomatis memotong setelah 25 detik lalu melompat ke model cadangan.
+// sistem otomatis memotong setelah 35 detik lalu melompat ke model cadangan.
 const daftarModel = [
     "gemini-3.8-flash",       // Model utama
     "gemini-3.5-flash",       // Cadangan pertama (Sangat stabil)
     "gemini-3.5-flash-lite",  // Cadangan kedua (Versi ringan dan kilat)
-    "gemini-4-Neon"          // Cadangan terakhir
+    "gemini-4-Neon"           // Cadangan terakhir (ubah ke huruf kecil semua jika API menolak huruf kapital)
 ];
 
-const TIMEOUT_PER_MODEL_MS = 25000; // Maksimal tunggu 25 detik per model
+const TIMEOUT_PER_MODEL_MS = 35000; // Maksimal tunggu 35 detik per model
 
 const jalankanDenganTimeout = (promise, ms) => {
     let timer;
@@ -37,12 +37,11 @@ const panggilGeminiDenganFallback = async (promptData) => {
             const model = genAI.getGenerativeModel({
                 model: namaModel,
                 generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 1500
+                    temperature: 0.7
                 }
             });
 
-            // Eksekusi pemanggilan ke API Google dengan batas waktu 25 detik
+            // Eksekusi pemanggilan ke API Google dengan batas waktu 35 detik
             const result = await jalankanDenganTimeout(
                 model.generateContent(promptData, { timeout: TIMEOUT_PER_MODEL_MS }),
                 TIMEOUT_PER_MODEL_MS
@@ -123,13 +122,15 @@ const scanKulkas = async (req, res) => {
             return res.status(400).json({ error: "Gambar bahan makanan tidak ditemukan!" });
         }
 
+        const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+
         const prompt = `Perhatikan gambar bahan makanan ini. Berikan 5 hingga 10 rekomendasi nama masakan lezat dan praktis ala anak kos yang bisa dibuat HANYA dengan bahan-bahan dominan di gambar tersebut (boleh ditambah bumbu dasar biasa).
         Format keluaran WAJIB HANYA berupa JSON Array string murni, tanpa teks awalan/akhiran, tanpa format markdown.
         Contoh persis: ["Telur Dadar Crispy", "Tumis Sayur Pedas", "Sup Bening Sederhana"]`;
 
         const imagePart = {
             inlineData: {
-                data: imageBase64,
+                data: cleanBase64,
                 mimeType: "image/jpeg"
             }
         };
